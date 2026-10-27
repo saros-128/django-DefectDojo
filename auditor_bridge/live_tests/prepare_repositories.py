@@ -34,8 +34,10 @@ for name, upstream in [("juice-shop", "https://github.com/juice-shop/juice-shop.
             shutil.copytree(snapshot, path)
         else:
             git(["clone", "--depth=1", "--no-tags", upstream, str(path)])
-        git(["fetch", "--depth=1", "origin", UPSTREAM_PINS[upstream]], path)
-        git(["checkout", "--detach", "FETCH_HEAD"], path)
+            git(["fetch", "--depth=1", "origin", UPSTREAM_PINS[upstream]], path)
+        # A pre-fetched snapshot is the documented offline download fallback.
+        # Checkout also verifies that it contains the exact pinned commit.
+        git(["checkout", "--detach", UPSTREAM_PINS[upstream]], path)
         upstream_sha = git(["rev-parse", "HEAD"], path)
         git(["config", "user.name", "Auditor integration test"], path)
         git(["config", "user.email", "auditor-live@example.invalid"], path)

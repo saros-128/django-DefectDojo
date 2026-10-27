@@ -118,6 +118,11 @@ checks. A second complete fresh-stand run was not performed after packaging:
 the qualified host had only about 2.2 GiB free. This distinction is intentional.
 The acceptance scripts were also formatted with upstream Ruff after the live run;
 selected packaged scenarios and read-back were rechecked against the live stand.
+The final packaging review also restored the Git credential helper: it reads
+the token file only for the isolated `http://gitlab` service. Its Docker routing
+tests and a private-repository `git ls-remote` check cover the packaged helper.
+Pre-fetched source snapshots are checked out at the pinned SHA without another
+GitHub fetch, so the documented download fallback works without outbound access.
 
 GitLab data/config, both databases, Dojo media and registry storage use bounded
 **tmpfs** volumes. Stopping the last mounting container, `down`, or rebooting can
