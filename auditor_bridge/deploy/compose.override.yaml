@@ -1,0 +1,61 @@
+# Run from the repository root alongside upstream docker-compose.yml.
+# No upstream source changes or additional Python dependencies are required.
+x-bridge-environment: &bridge-environment
+  DJANGO_SETTINGS_MODULE: auditor_bridge.deploy.settings
+  AUDITOR_BRIDGE_ENABLED: ${AUDITOR_BRIDGE_ENABLED:-false}
+  AUDITOR_BRIDGE_URL: ${AUDITOR_BRIDGE_URL:-https://auditor.example.invalid}
+  AUDITOR_BRIDGE_TOKEN_FILE: /run/secrets/auditor_api_token
+  AUDITOR_BRIDGE_CALLBACK_TOKEN_FILE: /run/secrets/auditor_callback_token
+  AUDITOR_BRIDGE_IMPORT_USER: ${AUDITOR_BRIDGE_IMPORT_USER:-admin}
+  AUDITOR_BRIDGE_AUTO_CREATE: ${AUDITOR_BRIDGE_AUTO_CREATE:-true}
+x-bridge-secrets: &bridge-secrets
+  - auditor_api_token
+  - auditor_callback_token
+services:
+  uwsgi:
+    image: ${AUDITOR_BRIDGE_IMAGE:-defectdojo-auditor-bridge:local}
+    build:
+      context: .
+      dockerfile: auditor_bridge/deploy/Dockerfile
+      target: release
+      args:
+        DOJO_IMAGE: ${AUDITOR_BRIDGE_BASE_IMAGE:-defectdojo/defectdojo-django:3.4.300}
+    environment: *bridge-environment
+    secrets: *bridge-secrets
+  initializer:
+    image: ${AUDITOR_BRIDGE_IMAGE:-defectdojo-auditor-bridge:local}
+    environment: *bridge-environment
+    secrets: *bridge-secrets
+  celeryworker:
+    image: ${AUDITOR_BRIDGE_IMAGE:-defectdojo-auditor-bridge:local}
+    environment: *bridge-environment
+    secrets: *bridge-secrets
+  celerybeat:
+    image: ${AUDITOR_BRIDGE_IMAGE:-defectdojo-auditor-bridge:local}
+    environment: *bridge-environment
+    secrets: *bridge-secrets
+  auditor-bridge-worker:
+    profiles: [auditor-bridge]
+    image: ${AUDITOR_BRIDGE_IMAGE:-defectdojo-auditor-bridge:local}
+    restart: unless-stopped
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - for settings_file in /app/docker/extra_settings/*; do if [ -f "$$settings_file" ]; then cp "$$settings_file" /app/dojo/settings/; fi; done; exec python manage.py auditor_bridge_worker
+    volumes:
+      - ./docker/extra_settings:/app/docker/extra_settings:ro
+    environment:
+      <<: *bridge-environment
+      DD_DATABASE_URL: ${DD_DATABASE_URL:?Set the upstream Dojo database URL}
+      DD_CELERY_BROKER_URL: ${DD_CELERY_BROKER_URL:-redis://valkey:6379/0}
+      DD_CACHE_URL: ${DD_CACHE_URL:-redis://valkey:6379/1}
+      DD_SECRET_KEY: ${DD_SECRET_KEY:?Set the upstream Dojo secret key}
+      DD_CREDENTIAL_AES_256_KEY: ${DD_CREDENTIAL_AES_256_KEY:?Set the upstream Dojo encryption key}
+    secrets: *bridge-secrets
+    depends_on:
+      initializer:
+        condition: service_completed_successfully
+secrets:
+  auditor_api_token:
+    file: ${AUDITOR_BRIDGE_API_TOKEN_PATH:?Path to the Auditor API token file}
+  auditor_callback_token:
+    file: ${AUDITOR_BRIDGE_CALLBACK_TOKEN_PATH:?Path to the callback token file}
