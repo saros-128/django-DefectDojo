@@ -1,0 +1,1959 @@
+{
+  "status": "PASS",
+  "qualified_at": "2026-10-27T22:18:42.670080+03:00",
+  "scope": "Complete packaged fresh Linux Docker installation and live acceptance; no prior databases, secrets, fixtures or scan results reused.",
+  "host": "saros-ub",
+  "stand_root": "/home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand",
+  "compose_project": "auditor-asoc-live-fresh-1027",
+  "source_provenance": {
+    "auditor_commit": "161eaf30a17e9ff9dcd09ae220bb616dad2a2095",
+    "archive_prefix": "saros-128-Auditor-161eaf30a17e9ff9dcd09ae220bb616dad2a2095",
+    "archive_sha256": "bd7b0c8c318926daa1bfc806d09b150de7da9a475b8262682fb518d27c6bfbeb",
+    "source_files": 1171,
+    "dojo_base_commit": "43198d99f89800f691656fbc8a31908852e5e2b0"
+  },
+  "images": [
+    {
+      "id": "sha256:cf5fa474494af7f2c31cb5c092d82990918038d026cdb8bf06fd268345e1bfa8",
+      "digests": [
+        "auditor-asoc-live-fresh-1027-app@sha256:cf5fa474494af7f2c31cb5c092d82990918038d026cdb8bf06fd268345e1bfa8"
+      ],
+      "tags": [
+        "auditor-asoc-live-fresh-1027-app:local"
+      ]
+    },
+    {
+      "id": "sha256:068888844351f5446b99dc7b56bb1d068458f3284499394a46318e0b7a41927e",
+      "digests": [
+        "auditor-asoc-live-fresh-1027-dojo@sha256:068888844351f5446b99dc7b56bb1d068458f3284499394a46318e0b7a41927e"
+      ],
+      "tags": [
+        "auditor-asoc-live-fresh-1027-dojo:bridge"
+      ]
+    }
+  ],
+  "versions": {
+    "gitlab": {
+      "version": "19.5.0",
+      "revision": "4c9e34e1faa",
+      "kas": {
+        "enabled": false,
+        "externalUrl": null,
+        "externalK8sProxyUrl": null,
+        "version": null
+      },
+      "enterprise": false
+    },
+    "dojo": "3.4.300",
+    "auditor_runtime_commit": "161eaf30a17e9ff9dcd09ae220bb616dad2a2095",
+    "dojo_fork_base": "43198d99f89800f691656fbc8a31908852e5e2b0"
+  },
+  "source_notes": [
+    "Auditor archive root contains the full requested commit SHA; all 1171 extracted source file hashes were unchanged after the run.",
+    "The new Dojo source checkout uses sparse checkout for bridge, instructions, lint configuration and the unchanged upstream unit-test wrapper. Core Dojo runs from its pinned official image.",
+    "Changes above the fork base are limited to auditor_bridge: run.sh orchestration, targeted regression tests, README and this fresh acceptance record."
+  ],
+  "commands": [
+    "python3 /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/sources/django-DefectDojo/auditor_bridge/live_tests/prepare.py --root /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand --auditor-source /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/sources/Auditor --project auditor-asoc-live-fresh-1027",
+    "bash /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/harness/run.sh setup",
+    "bash /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/harness/run.sh core",
+    "bash /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/harness/run.sh recovery",
+    "bash /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/harness/run.sh review",
+    "bash /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/harness/run.sh scenario final_evidence.py"
+  ],
+  "mode_results": {
+    "setup": {
+      "status": "PASS",
+      "attempt": 3,
+      "new_project": "auditor-asoc-live-fresh-1027",
+      "fresh_volumes": 6,
+      "stages": [
+        "bootstrap_api",
+        "prepare_repositories",
+        "service_account",
+        "configure_integration",
+        "register_runner"
+      ],
+      "fixed_packaging_defects": [
+        "sudo environment filtering",
+        "nginx stale backend DNS after recreation"
+      ]
+    },
+    "core": {
+      "status": "PASS",
+      "attempt": 1,
+      "scripts": [
+        "baseline.py",
+        "events.py",
+        "schedules.py",
+        "profile_cases.py",
+        "callback_push.py",
+        "report_cases.py",
+        "negative_callbacks.py",
+        "webhook_dedup.py",
+        "identity_cases.py",
+        "ui_flow.py"
+      ]
+    },
+    "recovery": {
+      "status": "PASS",
+      "attempt": 1,
+      "cases": {
+        "lost-create-recovery": {
+          "sequence_count": 1,
+          "automation_count": 1
+        },
+        "lost-callback-recovery": {
+          "test_count": 1,
+          "attempts": 2
+        },
+        "dojo-outage": {
+          "test_count": 1,
+          "attempts": 2
+        },
+        "auditor-outage": {
+          "sequence_count": 1,
+          "recovered_state": "synced"
+        }
+      }
+    },
+    "review": {
+      "status": "PASS",
+      "attempt": 1,
+      "script": "review_cases.py"
+    }
+  },
+  "packaging_defects": [
+    {
+      "name": "sudo strips inherited Compose project identity",
+      "observed_failure": "register_runner.py: KeyError COMPOSE_PROJECT_NAME",
+      "fix": "Pass -e COMPOSE_PROJECT_NAME=value explicitly for scenario and recovery Docker processes.",
+      "regression": "test_scenario_receives_project_after_sudo_filters_environment",
+      "before_fix": "FAIL: expected project identity was None",
+      "after_fix": "PASS"
+    },
+    {
+      "name": "nginx retains stale uwsgi backend address after recreation",
+      "observed_failure": "Second setup returned HTTP 502 from dojo-web and timed out waiting for /login; logged upstream IP differed from the current Dojo container.",
+      "fix": "Restart dojo-web after backend recreation in setup, recovery transitions and recovery cleanup.",
+      "regression": "test_setup_refreshes_nginx_before_bootstrap_after_backend_recreation",
+      "before_fix": "FAIL: nginx refresh missing before bootstrap",
+      "after_fix": "PASS"
+    }
+  ],
+  "checks": {
+    "packaging_regression_tests_passed": 4,
+    "packaging_image": "auditor-asoc-live-fresh-1027-app:local",
+    "bridge_contract_tests_passed": 12,
+    "bridge_test_runner": "Unchanged run-unittest.sh --test-case auditor_bridge.tests, Docker routing shim to the new project; no database setup required for SimpleTestCase.",
+    "ruff": "0.16.10, upstream ruff.toml, all auditor_bridge: PASS",
+    "docker_python_compilation": "PASS",
+    "docker_bash_syntax": "PASS",
+    "full_auditor_unit_regression_rerun": false
+  },
+  "fresh_isolation": {
+    "project": "auditor-asoc-live-fresh-1027",
+    "volumes": [
+      {
+        "name": "auditor-asoc-live-fresh-1027_auditor-db",
+        "created": "2026-10-27T21:45:13+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=512m",
+          "type": "tmpfs"
+        }
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027_dojo-db",
+        "created": "2026-10-27T21:45:13+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=1g",
+          "type": "tmpfs"
+        }
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027_dojo-media",
+        "created": "2026-10-27T21:46:49+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=128m",
+          "type": "tmpfs"
+        }
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027_gitlab-config",
+        "created": "2026-10-27T21:45:13+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=64m",
+          "type": "tmpfs"
+        }
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027_gitlab-data",
+        "created": "2026-10-27T21:45:13+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=3g",
+          "type": "tmpfs"
+        }
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027_registry-data",
+        "created": "2026-10-27T21:45:13+03:00",
+        "options": {
+          "device": "tmpfs",
+          "o": "size=600m",
+          "type": "tmpfs"
+        }
+      }
+    ],
+    "prior_project": "auditor-asoc-live-0110bdc8",
+    "prior_backups_verified": true,
+    "prior_stand_stopped": true
+  },
+  "integrations": {
+    "asoc_id": "91e7bad5-f8f7-4267-b954-7c667fee09c0",
+    "gitlab_id": "73510bdb-272c-409d-a016-25a3ef2fb90c"
+  },
+  "fixtures": {
+    "group_id": 2,
+    "projects": [
+      {
+        "project_id": 1,
+        "path": "auditor-live/juice-shop",
+        "upstream": "https://github.com/juice-shop/juice-shop.git",
+        "upstream_sha": "717f5efa886b0417eeecb52378b03cf10567b7e2",
+        "fixture_sha": "3943ea3e21f88b316ca7073463d9b44c5bab1f68",
+        "default_branch": "main"
+      },
+      {
+        "project_id": 2,
+        "path": "auditor-live/nodegoat",
+        "upstream": "https://github.com/OWASP/NodeGoat.git",
+        "upstream_sha": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+        "fixture_sha": "65701885d01e7ad2aa33eb4759a98e8a190ea164",
+        "default_branch": "main"
+      }
+    ]
+  },
+  "baseline": [
+    {
+      "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+      "sequence_id": "6112568a-c3f7-4d6e-bb2e-07e1fcfc1147",
+      "repository_identity": {
+        "instance": "http://gitlab",
+        "provider": "gitlab",
+        "repository_id": "2"
+      },
+      "commit_sha": "65701885d01e7ad2aa33eb4759a98e8a190ea164",
+      "finding_count": 78,
+      "status": "COMPLETED",
+      "started_at": "2026-10-27T19:00:06.913407Z",
+      "completed_at": "2026-10-27T19:02:45.712721Z",
+      "jobs": [
+        {
+          "job_slug": "code-downloader",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "gitleaks",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "detect-secrets",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "opengrep",
+          "status": "COMPLETED"
+        }
+      ]
+    },
+    {
+      "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+      "sequence_id": "6112568a-c3f7-4d6e-bb2e-07e1fcfc1147",
+      "repository_identity": {
+        "instance": "http://gitlab",
+        "provider": "gitlab",
+        "repository_id": "1"
+      },
+      "commit_sha": "3943ea3e21f88b316ca7073463d9b44c5bab1f68",
+      "finding_count": 432,
+      "status": "COMPLETED",
+      "started_at": "2026-10-27T18:53:06.467864Z",
+      "completed_at": "2026-10-27T19:00:05.959070Z",
+      "jobs": [
+        {
+          "job_slug": "code-downloader",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "gitleaks",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "detect-secrets",
+          "status": "COMPLETED"
+        },
+        {
+          "job_slug": "opengrep",
+          "status": "COMPLETED"
+        }
+      ]
+    }
+  ],
+  "nine_event_types": [
+    "repository.discovered",
+    "push",
+    "merge_request.opened",
+    "merge_request.updated",
+    "merge_request.merged",
+    "tag.created",
+    "release.published",
+    "pipeline.succeeded",
+    "deployment.succeeded"
+  ],
+  "event_results": {
+    "push": {
+      "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a",
+      "test_id": 3,
+      "finding_count": 3
+    },
+    "merge_request.opened": {
+      "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405",
+      "test_id": 4,
+      "finding_count": 3
+    },
+    "merge_request.updated": {
+      "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7",
+      "test_id": 5,
+      "finding_count": 3
+    },
+    "merge_request.merged": {
+      "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f",
+      "test_id": 6,
+      "finding_count": 3
+    },
+    "tag.created": {
+      "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d",
+      "test_id": 7,
+      "finding_count": 3
+    },
+    "release.published": {
+      "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94",
+      "test_id": 8,
+      "finding_count": 3
+    },
+    "pipeline.succeeded": {
+      "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28",
+      "test_id": 9,
+      "finding_count": 3
+    },
+    "deployment.succeeded": {
+      "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5",
+      "test_id": 10,
+      "finding_count": 3
+    }
+  },
+  "schedules": {
+    "configured_at": "2026-10-27T19:03:50.661316+00:00",
+    "weekly_target": "2026-10-27T19:05:00+00:00",
+    "results": {
+      "interval": {
+        "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746",
+        "sequence_id": "6a08ba69-c217-4d71-aea1-f481ad69912b",
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "finding_count": 3,
+        "acknowledged": true
+      },
+      "weekly": {
+        "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522",
+        "sequence_id": "208a3db0-6919-441a-9d02-95fe9ce9331c",
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "finding_count": 3,
+        "acknowledged": true
+      }
+    }
+  },
+  "scenarios_passed": [
+    "real_juice_shop_nodegoat_three_scanner_baseline",
+    "nine_real_gitlab_triggers",
+    "actual_interval_scheduler",
+    "actual_weekly_scheduler",
+    "profile_create_update_disable_delete_readback",
+    "normalization_and_rule_reorder",
+    "invalid_create_edit_recovery",
+    "periodic_rule_drift_repair",
+    "missing_remote_sequence_error",
+    "callback_only_native_product_create",
+    "concurrent_duplicate_callback_receipts",
+    "same_scan_different_callback_id",
+    "callback_identity_sha_conflict",
+    "callback_auth_payload_origin_ssrf_refusals",
+    "webhook_auth_json_refusals",
+    "exact_real_webhook_payload_replay_dedup",
+    "rename_and_group_transfer_stable_product_engagement",
+    "disabled_archived_missing_ref_filter_exclusions",
+    "read_only_scope_hidden_project_absent",
+    "empty_report_native_empty_test",
+    "failed_scan_failed_ack_without_import",
+    "completed_with_failed_scanner_refused_without_import",
+    "lost_create_response_edit_retry_one_sequence",
+    "lost_callback_response_retry_one_test",
+    "dojo_unavailable_outbox_recovery",
+    "auditor_unavailable_periodic_profile_recovery",
+    "session_ui_save_sync_disable_and_csrf",
+    "delete_never_attempted_without_remote_create",
+    "delete_rejected_without_remote_create",
+    "rejected_disable_explicit_refusal",
+    "mandatory_snapshot_no_bypass",
+    "native_api_receipt_database_count_equality"
+  ],
+  "negative_checks": {
+    "callback_cases": {
+      "same_callback_changed_body": {
+        "status_code": 409,
+        "error": "callback_payload_conflict"
+      },
+      "different_callback_wrong_sha": {
+        "status_code": 409,
+        "error": "scan_snapshot_conflict"
+      },
+      "different_callback_wrong_identity": {
+        "status_code": 409,
+        "error": "scan_identity_conflict"
+      },
+      "report_url_ssrf": {
+        "status_code": 400,
+        "error": "untrusted_report_url"
+      },
+      "invalid_repository_zero": {
+        "status_code": 400,
+        "error": null
+      },
+      "invalid_repository_overlong": {
+        "status_code": 400,
+        "error": null
+      },
+      "invalid_scan_id": {
+        "status_code": 400,
+        "error": null
+      },
+      "unknown_field": {
+        "status_code": 400,
+        "error": null
+      },
+      "invalid_callback_token": {
+        "status_code": 401,
+        "error": null
+      }
+    },
+    "duplicate_requests": 6,
+    "imports_unchanged": true,
+    "invalid_webhook_token_status": 401,
+    "invalid_webhook_json_status": 422,
+    "origin_statuses": [
+      {
+        "instance": "https://git:bad",
+        "status": 400
+      },
+      {
+        "instance": "https://git:65536",
+        "status": 400
+      },
+      {
+        "instance": "https://[invalid",
+        "status": 400
+      },
+      {
+        "instance": "http://GITLAB.:80/",
+        "status": 200
+      }
+    ],
+    "review_sequence_set_unchanged": true,
+    "report_cases": {
+      "empty": {
+        "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410",
+        "scan_status": "COMPLETED",
+        "finding_count": 0,
+        "native_import_count": 1,
+        "callback_status_code": 200,
+        "report_status": "imported"
+      },
+      "failed": {
+        "scan_id": "9ced3ace-163f-49d9-9b31-9fbef7a57928",
+        "scan_status": "FAILED",
+        "finding_count": 0,
+        "native_import_count": 0,
+        "callback_status_code": 200,
+        "report_status": "failed"
+      },
+      "incomplete": {
+        "scan_id": "336e2047-50f7-4b42-81c4-b46246e16822",
+        "scan_status": "COMPLETED",
+        "finding_count": 0,
+        "native_import_count": 0,
+        "callback_status_code": 400,
+        "report_status": null
+      }
+    }
+  },
+  "ui_http_form_flow": {
+    "login": true,
+    "csrf_missing_status": 403,
+    "actions": [
+      {
+        "action": "save",
+        "http_status": 200,
+        "state": "pending"
+      },
+      {
+        "action": "sync",
+        "http_status": 200,
+        "state": "synced"
+      },
+      {
+        "action": "disable",
+        "http_status": 200,
+        "state": "synced"
+      }
+    ]
+  },
+  "native_counts": {
+    "imports": [
+      {
+        "scan_id": "c7f8f6c9-5a2e-4669-b688-0170e027b530",
+        "test_id": 17,
+        "findings": 0,
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "80d9ab7c-ecc9-4b2f-a28d-fa320321cc21",
+        "test_id": 16,
+        "findings": 0,
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "c8d7bcc6-a270-443a-bd19-8abb6dfe1b6c",
+        "test_id": 15,
+        "findings": 3,
+        "commit_sha": "50c52f31e6e18c085f0124975aaf48b8bec0c025",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410",
+        "test_id": 14,
+        "findings": 0,
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b",
+        "test_id": 13,
+        "findings": 1,
+        "commit_sha": "c32f7f6d67c2a41a1808db0d7a0d52f3a83ce50c",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "4"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522",
+        "test_id": 12,
+        "findings": 3,
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746",
+        "test_id": 11,
+        "findings": 3,
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5",
+        "test_id": 10,
+        "findings": 3,
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28",
+        "test_id": 9,
+        "findings": 3,
+        "commit_sha": "77d1f603f64dcb907c1cc33dfd4324ff42f546c2",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94",
+        "test_id": 8,
+        "findings": 3,
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d",
+        "test_id": 7,
+        "findings": 3,
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f",
+        "test_id": 6,
+        "findings": 3,
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7",
+        "test_id": 5,
+        "findings": 3,
+        "commit_sha": "00852122c8c13c56c4aa4dfa0058c014272e0d8f",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405",
+        "test_id": 4,
+        "findings": 3,
+        "commit_sha": "8657d6524425590e6091fe8c899ad7ee166d7fcd",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a",
+        "test_id": 3,
+        "findings": 3,
+        "commit_sha": "aed36fa288cbd3cac9510bbf5ca9bf145e2ea7b9",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+        "test_id": 2,
+        "findings": 78,
+        "commit_sha": "65701885d01e7ad2aa33eb4759a98e8a190ea164",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "detect-secrets",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "opengrep",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+        "test_id": 1,
+        "findings": 432,
+        "commit_sha": "3943ea3e21f88b316ca7073463d9b44c5bab1f68",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "1"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "detect-secrets",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "opengrep",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    ],
+    "test_count": 17,
+    "finding_count": 544,
+    "hidden_project_absent": true,
+    "api_counts_match": true
+  },
+  "native_database_readback": {
+    "all_native_findings": 544,
+    "all_native_tests": 17,
+    "callback_receipts": [
+      {
+        "callback_id": "6760922e-6d4c-4602-aaa5-bfe193a302be",
+        "report_status": "imported",
+        "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294"
+      },
+      {
+        "callback_id": "bbb5d32f-c38c-4fe5-9c3a-4d90bef2e1b6",
+        "report_status": "imported",
+        "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999"
+      },
+      {
+        "callback_id": "b125f4a3-08ee-4c47-b848-679bc6516e6f",
+        "report_status": "imported",
+        "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a"
+      },
+      {
+        "callback_id": "7853926c-80d5-4625-bc1c-7e4c07068b18",
+        "report_status": "imported",
+        "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405"
+      },
+      {
+        "callback_id": "baf8552e-5419-4326-b6d2-6a26c3cfea74",
+        "report_status": "imported",
+        "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7"
+      },
+      {
+        "callback_id": "84fa4c2a-c2fb-43e1-96d7-353badc4d79b",
+        "report_status": "imported",
+        "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f"
+      },
+      {
+        "callback_id": "233d51d6-0aff-4d10-8540-b4f1501acdc7",
+        "report_status": "imported",
+        "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d"
+      },
+      {
+        "callback_id": "f5d5c8c8-27b0-4461-bdb0-28d7387dea42",
+        "report_status": "imported",
+        "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94"
+      },
+      {
+        "callback_id": "d19238c6-cde6-4635-8319-d53637dc86f2",
+        "report_status": "imported",
+        "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28"
+      },
+      {
+        "callback_id": "b7fda514-8b3a-4ab1-b150-5df2ddbceaa6",
+        "report_status": "imported",
+        "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5"
+      },
+      {
+        "callback_id": "68406172-b571-4962-ab8c-d21d593ab226",
+        "report_status": "imported",
+        "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746"
+      },
+      {
+        "callback_id": "410db091-ead3-4bea-99d9-3e7e5c2e47da",
+        "report_status": "imported",
+        "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522"
+      },
+      {
+        "callback_id": "af908374-92e0-49b5-9fa0-e3d8bd645d90",
+        "report_status": "imported",
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b"
+      },
+      {
+        "callback_id": "882da5dd-a532-4ebb-bb95-3ba0cca88abf",
+        "report_status": "imported",
+        "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410"
+      },
+      {
+        "callback_id": "7f452352-2778-4fbd-ab29-1008bae7105f",
+        "report_status": "failed",
+        "scan_id": "9ced3ace-163f-49d9-9b31-9fbef7a57928"
+      },
+      {
+        "callback_id": "b193d571-cb8a-4d62-8cb1-59ded134394b",
+        "report_status": "imported",
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b"
+      },
+      {
+        "callback_id": "0d0728ea-d3a1-42ac-9512-60212d4704ee",
+        "report_status": "imported",
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b"
+      },
+      {
+        "callback_id": "7c92ff70-e188-4366-b7f4-1f2148c91283",
+        "report_status": "imported",
+        "scan_id": "c8d7bcc6-a270-443a-bd19-8abb6dfe1b6c"
+      },
+      {
+        "callback_id": "d490f394-ad98-4d88-b3a5-47c3cf5ada44",
+        "report_status": "imported",
+        "scan_id": "80d9ab7c-ecc9-4b2f-a28d-fa320321cc21"
+      },
+      {
+        "callback_id": "d9de2f60-ee59-4ef6-9a49-e55a1a129b34",
+        "report_status": "imported",
+        "scan_id": "c7f8f6c9-5a2e-4669-b688-0170e027b530"
+      },
+      {
+        "callback_id": "0da59153-b4d6-4140-97c6-b545710164d1",
+        "report_status": "imported",
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b"
+      }
+    ],
+    "database_counts_match": true,
+    "finding_count": 544,
+    "imports": [
+      {
+        "commit_sha": "3943ea3e21f88b316ca7073463d9b44c5bab1f68",
+        "native_finding_count": 432,
+        "receipt_finding_count": 432,
+        "repository_id": "1",
+        "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+        "test_id": 1
+      },
+      {
+        "commit_sha": "65701885d01e7ad2aa33eb4759a98e8a190ea164",
+        "native_finding_count": 78,
+        "receipt_finding_count": 78,
+        "repository_id": "2",
+        "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+        "test_id": 2
+      },
+      {
+        "commit_sha": "aed36fa288cbd3cac9510bbf5ca9bf145e2ea7b9",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a",
+        "test_id": 3
+      },
+      {
+        "commit_sha": "8657d6524425590e6091fe8c899ad7ee166d7fcd",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405",
+        "test_id": 4
+      },
+      {
+        "commit_sha": "00852122c8c13c56c4aa4dfa0058c014272e0d8f",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7",
+        "test_id": 5
+      },
+      {
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f",
+        "test_id": 6
+      },
+      {
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d",
+        "test_id": 7
+      },
+      {
+        "commit_sha": "26634989fc936b3543431024e5b8c6737bdd46e1",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94",
+        "test_id": 8
+      },
+      {
+        "commit_sha": "77d1f603f64dcb907c1cc33dfd4324ff42f546c2",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28",
+        "test_id": 9
+      },
+      {
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5",
+        "test_id": 10
+      },
+      {
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746",
+        "test_id": 11
+      },
+      {
+        "commit_sha": "81d24baec0e3b34995928cca9137ce2d237ddc6d",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522",
+        "test_id": 12
+      },
+      {
+        "commit_sha": "c32f7f6d67c2a41a1808db0d7a0d52f3a83ce50c",
+        "native_finding_count": 1,
+        "receipt_finding_count": 1,
+        "repository_id": "4",
+        "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b",
+        "test_id": 13
+      },
+      {
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "native_finding_count": 0,
+        "receipt_finding_count": 0,
+        "repository_id": "5",
+        "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410",
+        "test_id": 14
+      },
+      {
+        "commit_sha": "50c52f31e6e18c085f0124975aaf48b8bec0c025",
+        "native_finding_count": 3,
+        "receipt_finding_count": 3,
+        "repository_id": "2",
+        "scan_id": "c8d7bcc6-a270-443a-bd19-8abb6dfe1b6c",
+        "test_id": 15
+      },
+      {
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "native_finding_count": 0,
+        "receipt_finding_count": 0,
+        "repository_id": "5",
+        "scan_id": "80d9ab7c-ecc9-4b2f-a28d-fa320321cc21",
+        "test_id": 16
+      },
+      {
+        "commit_sha": "6229530ccf5bd566368f82a48eff05ea7c9032d7",
+        "native_finding_count": 0,
+        "receipt_finding_count": 0,
+        "repository_id": "5",
+        "scan_id": "c7f8f6c9-5a2e-4669-b688-0170e027b530",
+        "test_id": 17
+      }
+    ],
+    "native_finding_count": 544,
+    "native_test_count": 17,
+    "repository_links": [
+      {
+        "engagement_id": 1,
+        "product_id": 1,
+        "repository_id": "1"
+      },
+      {
+        "engagement_id": 2,
+        "product_id": 2,
+        "repository_id": "2"
+      },
+      {
+        "engagement_id": 3,
+        "product_id": 3,
+        "repository_id": "4"
+      },
+      {
+        "engagement_id": 4,
+        "product_id": 4,
+        "repository_id": "5"
+      }
+    ],
+    "test_count": 17
+  },
+  "callback_acknowledgements": [
+    {
+      "scan_id": "c7f8f6c9-5a2e-4669-b688-0170e027b530",
+      "test_id": 17,
+      "callbacks": [
+        {
+          "callback_id": "d9de2f60-ee59-4ef6-9a49-e55a1a129b34",
+          "attempts": 2,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "c7f8f6c9-5a2e-4669-b688-0170e027b530",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "4",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "5"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "80d9ab7c-ecc9-4b2f-a28d-fa320321cc21",
+      "test_id": 16,
+      "callbacks": [
+        {
+          "callback_id": "d490f394-ad98-4d88-b3a5-47c3cf5ada44",
+          "attempts": 2,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "80d9ab7c-ecc9-4b2f-a28d-fa320321cc21",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "4",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "5"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "c8d7bcc6-a270-443a-bd19-8abb6dfe1b6c",
+      "test_id": 15,
+      "callbacks": [
+        {
+          "callback_id": "7c92ff70-e188-4366-b7f4-1f2148c91283",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "c8d7bcc6-a270-443a-bd19-8abb6dfe1b6c",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410",
+      "test_id": 14,
+      "callbacks": [
+        {
+          "callback_id": "882da5dd-a532-4ebb-bb95-3ba0cca88abf",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "e98b3d46-23ff-4542-a06d-acf6cd1e9410",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "4",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "5"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b",
+      "test_id": 13,
+      "callbacks": [
+        {
+          "callback_id": "af908374-92e0-49b5-9fa0-e3d8bd645d90",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "cc31b9a8-6aaf-4354-8ee7-a984347fcb2b",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "3",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "4"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522",
+      "test_id": 12,
+      "callbacks": [
+        {
+          "callback_id": "410db091-ead3-4bea-99d9-3e7e5c2e47da",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "18c0c363-cdf6-4727-8991-9891f9f17522",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746",
+      "test_id": 11,
+      "callbacks": [
+        {
+          "callback_id": "68406172-b571-4962-ab8c-d21d593ab226",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "3f80f6c4-c0a9-4406-b280-b7e9e6de2746",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5",
+      "test_id": 10,
+      "callbacks": [
+        {
+          "callback_id": "b7fda514-8b3a-4ab1-b150-5df2ddbceaa6",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "ae3a3b41-ffbf-4711-a020-f1a0bdc9d1a5",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28",
+      "test_id": 9,
+      "callbacks": [
+        {
+          "callback_id": "d19238c6-cde6-4635-8319-d53637dc86f2",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "bb751a4d-836c-4ead-a9f0-0f4123b1df28",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94",
+      "test_id": 8,
+      "callbacks": [
+        {
+          "callback_id": "f5d5c8c8-27b0-4461-bdb0-28d7387dea42",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "c848231f-7f5b-4386-bb24-3c5d44576e94",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d",
+      "test_id": 7,
+      "callbacks": [
+        {
+          "callback_id": "233d51d6-0aff-4d10-8540-b4f1501acdc7",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "e69d2a62-a0bc-456c-8515-e92dc728e24d",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f",
+      "test_id": 6,
+      "callbacks": [
+        {
+          "callback_id": "84fa4c2a-c2fb-43e1-96d7-353badc4d79b",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "4f56ffdb-90cd-4eda-abb6-b79f5aa98c4f",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7",
+      "test_id": 5,
+      "callbacks": [
+        {
+          "callback_id": "baf8552e-5419-4326-b6d2-6a26c3cfea74",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "61167ed1-5932-46ba-aa31-83c0d3c52bb7",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405",
+      "test_id": 4,
+      "callbacks": [
+        {
+          "callback_id": "7853926c-80d5-4625-bc1c-7e4c07068b18",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "edd2dbb4-831a-4b10-8cc5-b88a36854405",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a",
+      "test_id": 3,
+      "callbacks": [
+        {
+          "callback_id": "b125f4a3-08ee-4c47-b848-679bc6516e6f",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "d10c89ed-073d-4a26-b69a-7bdee5c95b8a",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+      "test_id": 2,
+      "callbacks": [
+        {
+          "callback_id": "bbb5d32f-c38c-4fe5-9c3a-4d90bef2e1b6",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "2",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "2"
+          }
+        }
+      ]
+    },
+    {
+      "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+      "test_id": 1,
+      "callbacks": [
+        {
+          "callback_id": "6760922e-6d4c-4602-aaa5-bfe193a302be",
+          "attempts": 1,
+          "status_code": 200,
+          "acknowledgement": {
+            "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "project_id": "1",
+            "project_found": true,
+            "report_status": "imported",
+            "repository_id": "1"
+          }
+        }
+      ]
+    }
+  ],
+  "all_imports_acknowledged": true,
+  "native_receipt_status_counts": {
+    "imported": 20,
+    "failed": 1
+  },
+  "runner_jobs": [
+    {
+      "project_id": 1,
+      "id": 2,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 1
+    },
+    {
+      "project_id": 1,
+      "id": 1,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 1
+    },
+    {
+      "project_id": 2,
+      "id": 20,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 10
+    },
+    {
+      "project_id": 2,
+      "id": 19,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 10
+    },
+    {
+      "project_id": 2,
+      "id": 18,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 9
+    },
+    {
+      "project_id": 2,
+      "id": 17,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 9
+    },
+    {
+      "project_id": 2,
+      "id": 16,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 8
+    },
+    {
+      "project_id": 2,
+      "id": 15,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 8
+    },
+    {
+      "project_id": 2,
+      "id": 14,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 7
+    },
+    {
+      "project_id": 2,
+      "id": 13,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 7
+    },
+    {
+      "project_id": 2,
+      "id": 12,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 6
+    },
+    {
+      "project_id": 2,
+      "id": 11,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 6
+    },
+    {
+      "project_id": 2,
+      "id": 10,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 5
+    },
+    {
+      "project_id": 2,
+      "id": 9,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 5
+    },
+    {
+      "project_id": 2,
+      "id": 8,
+      "name": "deploy",
+      "status": "canceled",
+      "runner_id": null,
+      "pipeline_id": 4
+    },
+    {
+      "project_id": 2,
+      "id": 7,
+      "name": "verify",
+      "status": "canceled",
+      "runner_id": null,
+      "pipeline_id": 4
+    },
+    {
+      "project_id": 2,
+      "id": 6,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 3
+    },
+    {
+      "project_id": 2,
+      "id": 5,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 3
+    },
+    {
+      "project_id": 2,
+      "id": 4,
+      "name": "deploy",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 2
+    },
+    {
+      "project_id": 2,
+      "id": 3,
+      "name": "verify",
+      "status": "success",
+      "runner_id": 1,
+      "pipeline_id": 2
+    }
+  ],
+  "runner_successful_job_count": 18,
+  "native_database_command": "sudo docker compose -f /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/compose.json --env-file /home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/stand/.env -p auditor-asoc-live-fresh-1027 exec -T dojo python manage.py shell",
+  "native_database_stdin": "import json\nfrom auditor_bridge.models import CallbackReceipt, RepositoryLink, ScanImport\nfrom dojo.models import Finding, Test\n\nimports=[]\nfor row in ScanImport.objects.select_related('test','repository').order_by('created_at'):\n    actual=row.test.finding_set.count()\n    if actual != row.finding_count:\n        raise RuntimeError('Native finding count differs from import receipt')\n    imports.append({'scan_id':str(row.scan_id),'test_id':row.test_id,'receipt_finding_count':row.finding_count,'native_finding_count':actual,'commit_sha':row.commit_sha,'repository_id':row.repository.repository_id})\nreceipts=[]\nfor row in CallbackReceipt.objects.order_by('created_at'):\n    ack=row.acknowledgement\n    receipts.append({'callback_id':str(row.callback_id),'scan_id':ack.get('scan_id'),'report_status':ack.get('report_status')})\ntest_ids=[row['test_id'] for row in imports]\nresult={'imports':imports,'test_count':len(imports),'finding_count':sum(row['native_finding_count'] for row in imports),'all_native_tests':Test.objects.count(),'all_native_findings':Finding.objects.count(),'native_test_count':Test.objects.filter(id__in=test_ids).count(),'native_finding_count':Finding.objects.filter(test_id__in=test_ids).count(),'callback_receipts':receipts,'repository_links':list(RepositoryLink.objects.order_by('repository_id').values('repository_id','product_id','engagement_id')),'database_counts_match':True}\nprint('FRESH_NATIVE_JSON='+json.dumps(result,sort_keys=True))\n",
+  "preservation": {
+    "checked_at": "2026-10-27T19:16:27.731093+00:00",
+    "preexisting_containers_checked": 12,
+    "changed_foreign_containers": [],
+    "auditor_source_files_unchanged": 1171,
+    "source_changes": [],
+    "all_import_acks_have_native_receipts": true,
+    "new_stand": [
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-gitlab-runner-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-auditor-worker-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-auditor-api-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-auditor-poller-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-worker-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-bridge-worker-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-init-1",
+        "status": "exited",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-web-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-db-1",
+        "status": "running",
+        "health": "healthy",
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-auditor-db-1",
+        "status": "running",
+        "health": "healthy",
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-auditor-redis-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-dojo-redis-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-scanner-registry-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-openbao-1",
+        "status": "running",
+        "health": null,
+        "exit_code": 0
+      },
+      {
+        "name": "auditor-asoc-live-fresh-1027-gitlab-1",
+        "status": "running",
+        "health": "healthy",
+        "exit_code": 0
+      }
+    ],
+    "disk_free_bytes": 1398947840
+  },
+  "prior_stand": {
+    "project": "auditor-asoc-live-0110bdc8",
+    "state": "stopped",
+    "backup_root": "/home/saros/Projects/AppSec-Auditor/auditor-fresh-validation-20261027/backup",
+    "backup_manifest": {
+      "prior-private-config.tar.gz": {
+        "bytes": 42274950,
+        "sha256": "1aefe6beff14d2922bdbf8268dcb52d691b83a8ce6ae8077d9fd667e60bf92b7",
+        "tar_members": 2310
+      },
+      "gitlab.dump": {
+        "bytes": 9063440,
+        "sha256": "2b9fa38954f94bd12e5c5595788f5c86fd332ffea936ebb5f77f42bb5de63d9c",
+        "tar_members": null
+      },
+      "auditor.contents": {
+        "bytes": 11147,
+        "sha256": "b3b4359e919eb7c7f3b6af2043b84c5637fea841fd37b51d816dde6564faacd2",
+        "tar_members": null
+      },
+      "auditor.dump": {
+        "bytes": 121274,
+        "sha256": "e51d4f7507e6b7c2ad7bf73b5eab609342fa9f85120589e78f598c4fd7f496a4",
+        "tar_members": null
+      },
+      "gitlab-repos-config.tar.gz": {
+        "bytes": 20571722,
+        "sha256": "562c2623135089a373541c53eb3ab8a4a9ce2193b2c665d5dbc3f38a5ed8535d",
+        "tar_members": 279
+      },
+      "gitlab.contents": {
+        "bytes": 1803886,
+        "sha256": "09018d94bd6029cb11c7d3d530d606dc88e9f1129677d2959364f2b244256f2e",
+        "tar_members": null
+      },
+      "prior-quiesce.log": {
+        "bytes": 1051,
+        "sha256": "a68940f0d68fcfe169bbd265fdfad32438c812c68557a4125314431598f098ef",
+        "tar_members": null
+      },
+      "dojo.contents": {
+        "bytes": 178183,
+        "sha256": "0cd25031aa314e8948bb57181ea34277058b2be397d0c780ae84979837dc0040",
+        "tar_members": null
+      },
+      "dojo.dump": {
+        "bytes": 1472697,
+        "sha256": "329a43fc70a8fbdf0ebf5d84779bffa2975ed90a1062d1fffc969b9567214e5a",
+        "tar_members": null
+      }
+    },
+    "backup_validation": "All three PostgreSQL custom dumps were parsed by matching pg_restore --list; repository/config tar archives were enumerated. Full restore was not exercised.",
+    "source_and_evidence_retained": true
+  },
+  "new_stand_state": "Running, initializer exited successfully; temporary fault proxies removed; normal Auditor/Dojo endpoints restored.",
+  "limitations": [
+    "Bounded tmpfs data volumes: stopping the final mounting container or rebooting can erase data. This is a disposable acceptance stand, not a production persistence model.",
+    "The run used cached image layers and started with about 2.2 GiB disk available; a machine without those images needs more disk.",
+    "Fresh totals 17 Tests / 544 findings differ from historical 28 / 577 because this clean stand contains only the new matrix, without prior repeated scenarios.",
+    "UI validation used real HTTP session/CSRF form flow; no new browser-layout or Playwright run.",
+    "Full Auditor unit regression was not repeated for this fresh-install request; all required live modes and selected package/bridge regressions passed."
+  ],
+  "scanner_coverage_notes": [
+    {
+      "scan_id": "6301c9ec-4f95-403c-8d8a-678fa0040294",
+      "scanner": "opengrep",
+      "messages": [
+        "Scanning 1499 files tracked by git with 2006 Code rules:",
+        "Some files were skipped or only partially analyzed.",
+        "Partially scanned: 88 files only partially analyzed due to parsing or internal Opengrep errors",
+        "Scan skipped: 2 files larger than 1.0 MB, 2 files matching .semgrepignore patterns",
+        "For a full list of skipped files, run opengrep with the --verbose flag."
+      ]
+    },
+    {
+      "scan_id": "c5e2edc2-8319-490b-8577-74f86bb50999",
+      "scanner": "opengrep",
+      "messages": [
+        "Scanning 142 files tracked by git with 2006 Code rules:",
+        "Some files were skipped or only partially analyzed.",
+        "Partially scanned: 14 files only partially analyzed due to parsing or internal Opengrep errors"
+      ]
+    }
+  ],
+  "publication_secret_check": {
+    "status": "PASS",
+    "files_checked": 58,
+    "fresh_secret_values_checked": 18,
+    "prior_secret_values_checked": 19,
+    "distinct_secret_values_checked": 37,
+    "matching_files": [],
+    "match_count": 0,
+    "forms_checked": [
+      "plain",
+      "URL-encoded",
+      "URL-form-encoded",
+      "base64",
+      "URL-safe base64"
+    ]
+  },
+  "proof_file_sha256": {
+    "setup-attempt-1.log": "88c9b41cf453e0f9195c2ad871b440c569cd3b0db736acd2b8d2afd7f7d7ea91",
+    "setup-attempt-2.log": "7b0c8afeb77ac26115986f4cadb5d9b7cfb53dec540538f4879b99488a6eb2f8",
+    "setup-attempt-3.log": "bee03e6812a204b2017f746ec147fed197514b04d75671399675ff82e865e45f",
+    "core-attempt-1.log": "e31d0754fb089080d9f2d95d9836a309f753cce631c3b29de1c5503dbc0788d5",
+    "recovery-attempt-1.log": "ea805651b9a300a44bbacc93783b61a42ffd530fbebbb4dfd6276b2516f9f1e3",
+    "review-attempt-1.log": "78b6aaaa7ca2c1d5e69880e251a9af08fbe9ad9b330c8b33ceebd2866b913a35",
+    "final-evidence.log": "1b9b9ce80e7a47da42f8c368d4b903590d894793f662c5432894a547e1381c7a",
+    "packaging-unit-final.log": "42a8d88bb210830d531505278f2bb39fe849226d50a8a96b104ca64336448180",
+    "bridge-unit-fresh.log": "e386888de671fe575831d72f7fceeaead495f9c96e1173a3358ff8da6691ee9b",
+    "ruff-final.log": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "compile-shell-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sudo-project-before.log": "5597121831a5f41ea8af3e02fb0c0e0967a5a2bebb6d0739ce6d1a5e8b82a755",
+    "nginx-refresh-before.log": "00e6e97bc90fe926a9ae6381b31a7f9cb973478492c15e932d700a440269e4b0",
+    "final-native.json": "52540f7711d58dba4079006f1fc035e766bbf3b589421722275a559caae1a8ed",
+    "final-acks-runner.log": "ececb5e172200cda09dae6136b36b00a72403ff9e46883f46cd668bf28b6499c",
+    "stand/evidence/auditor-outage.json": "fd71e56ee1e8468e1a473b930294bb90ca3255a95f161e3183b7c3f79d885268",
+    "stand/evidence/baseline-callbacks.json": "ba4ec0ccf0233cf0c4a7aa4638a66144aafa59f684dcb33e319f638c41472344",
+    "stand/evidence/baseline-imports.json": "90ab255e5b2ebc9530c75d22b15b4fc0f4f1f9181e8f08a0509689889a2c415a",
+    "stand/evidence/baseline-inventory.json": "2346143f6cba8627eebe9612bd6b676ee0c30b8d73db667f3b2a2a077b86e3f4",
+    "stand/evidence/baseline-profile.json": "748ab9d5eebe87d001c0b1cf66e5f7dae620150b88f6db50c8d9834cecd9a16d",
+    "stand/evidence/baseline-reports.json": "0baf4b5055b9127b3968d0ef5ba4c7c7f868f3b9b51938fa57ae4aadd8c13fa9",
+    "stand/evidence/baseline-scans.json": "3548fbf5c76bb816e0ca36bcdbb4b0b7ec7b3f3facfb0ebb32c7e1949a0c0a16",
+    "stand/evidence/bootstrap-api.json": "94053f819335c134ad5c02e7509f2ddd7a0cec4e87e27d92bd1f8242f84470f9",
+    "stand/evidence/callback-only-create.json": "56467e7a78f6454067faae1e8f6dfac6399c9e5ddfc9c6c17667999a434a65db",
+    "stand/evidence/dojo-outage.json": "fd3621374edd3e95ae3b87f7267699f208e4e4b906ec707d3b4b70744ba900f2",
+    "stand/evidence/dojo-ui-flow.json": "2762a5b34b768ea697a05194bbc9bed9fa0f641c6dacf3e06e4950e08e35225f",
+    "stand/evidence/event-deployment.succeeded.json": "33bc0ce77c37f2a06ff02b75d2e10286766b38597826f98e1bb107de981b39af",
+    "stand/evidence/event-merge_request.merged.json": "9ce5e80712d733fe8b07b18da7f65c7666530ff3291c27b41db74daa8a13e157",
+    "stand/evidence/event-merge_request.opened.json": "dec1eb5bb153eb41f99546bdaa22cb54c82e1537a20d407f91f4de0ed96ddb95",
+    "stand/evidence/event-merge_request.updated.json": "0778024a266a052bee0f6fabbe539de578fe3f7523f5a1e3b4ef6d14c23bc221",
+    "stand/evidence/event-pipeline.succeeded.json": "16d242e2cff08b66322c7b1ed94df24a8f7b3e999f945bb0fed4e99cf9cf4e81",
+    "stand/evidence/event-push.json": "d2fc1e9d999550d634215172c7e69cc32454253ab3e2d1290ba1430a940a6838",
+    "stand/evidence/event-release.published.json": "8d8b8477b4ea4711f72497eadff43ef17b66913fd963b868e461bfa252fb5fb4",
+    "stand/evidence/event-tag.created.json": "076750e7f2374d4e3cb44d6a503214f3afad0100f122742fb2f439a69b4a3081",
+    "stand/evidence/events-state.json": "2860f538d6ec950c6a048adb03c49c6d2d31c00badff7427844acd27bdb5e00b",
+    "stand/evidence/final-acks-runner.json": "9a79fdfb3a143a220e4f0e1d980cad7661cfdd9ed39939cf701e9b818f2e5702",
+    "stand/evidence/final-counts.json": "f936d1619abc2a2c0388c13b517649db9b8effbf75f960df5d61fd94d23d6281",
+    "stand/evidence/gitlab-bootstrap.json": "86b4863fa527eeb691060690d2c54b0a3de08db2355643f637bbe826879bb198",
+    "stand/evidence/hooks.json": "abf9888b746e69388228d410b4d1fb2d5270681f0b18369cefbea2df89d54435",
+    "stand/evidence/identity-cases.json": "b2718f87ce66387bdcabc88fb160833afa10536cbdf96346ddfd08b1ae0b3d87",
+    "stand/evidence/initial-discovery.json": "7c682ad73a39c99d4e73fcc67762810a4424c2679cf7b7ecd50762c2499df6ad",
+    "stand/evidence/initial-dojo-inventory.json": "4fa7efaf418b57daae052a54186f072cf6032b0b96f81934118af30bd97b124e",
+    "stand/evidence/integration.json": "7a12f4c93faab43cf645f64f0e2e7aaf3d13c4b648d780ed1acd0fb53ee40315",
+    "stand/evidence/live-runtime-config.json": "edd3a385b650da75e01288ceb232e98b1c90fd8ac208f846d266fef084f195fa",
+    "stand/evidence/lost-callback-proxy.json": "a55b4fd8275d4cfd36ba79c1ee9c61626ec9659ab7577e3399b8f8e892490f98",
+    "stand/evidence/lost-callback-recovery.json": "f081bed4214507d0f01019062eae283f33a8d15d8f8a583654e662b92bf7d261",
+    "stand/evidence/lost-create-proxy.json": "e734d2d03d9076c408206c14121164635ad16b376b6b09e7e0b3d7c2e584e48b",
+    "stand/evidence/lost-create-recovery.json": "2fc0df1d193a0d7cbbde18a6dab5cc6d948c11545bc07a71b69d9ff225507f08",
+    "stand/evidence/negative-callbacks.json": "c10bd23ebbfffbad65233473cbef5575514f4a8adac7702043e5c479eadeca49",
+    "stand/evidence/profile-control-cases.json": "ec7638105c8c04287be040a1661c8a9cfbec570a327f1df90b4a1591d0f8e614",
+    "stand/evidence/report-cases.json": "17b52d003b1e558968ff87dfed789916dc6aef365859d7e2885dbfa661b4d79f",
+    "stand/evidence/repositories.json": "ce904c0f95b59b3c505a32606fc4a89c866895214d598ab583244bace181fd77",
+    "stand/evidence/review-cases.json": "ea295741d60f4fc8a6080e446ad335cfce9985c772a0e07a786de90675c3e8fd",
+    "stand/evidence/runner.json": "feae35e855c832eb688b5050f22996cfeefad39114eeaa2f20dfbd794b82496a",
+    "stand/evidence/schedules.json": "93318c481674ea1fed403fe8a56489d68b5b91b593bb29b26aab89608a08a47a",
+    "stand/evidence/service-account.json": "7f22a95e220f678b9cd81f93231ca192e1a845fd65d122a5b939db988fc23b5a",
+    "stand/evidence/webhook-dedup.json": "dda5806d147ba190a1719ec1e5f4f743c03a472c43a8826ef395a1eaabe81850"
+  }
+}

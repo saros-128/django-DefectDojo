@@ -8,18 +8,19 @@ dock() { if [[ "${LIVE_DOCKER_SUDO:-1}" == 1 ]]; then sudo -n docker "$@"; else 
 compose() { dock compose -f compose.json "$@"; }
 scenario() {
   dock run --rm --user "$(id -u):$(id -g)" --network "${COMPOSE_PROJECT_NAME}_default" \
-    -e COMPOSE_PROJECT_NAME -v "$PWD/harness:/harness:ro" -v "$PWD/secrets:/run/live-secrets" \
+    -e "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" -v "$PWD/harness:/harness:ro" -v "$PWD/secrets:/run/live-secrets" \
     -v "$PWD/evidence:/evidence" -v "$PWD/runtime/fixtures:/fixtures" -w /harness "$APP_IMAGE" python "$1"
   printf 'PASS: %s\n' "$1"
 }
 recovery() {
   dock run --rm --user "$(id -u):$(id -g)" --group-add "$(stat -c %g /var/run/docker.sock)" \
-    --network "${COMPOSE_PROJECT_NAME}_default" -e COMPOSE_PROJECT_NAME -e RECOVERY_CASE="$1" \
+    --network "${COMPOSE_PROJECT_NAME}_default" -e "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" -e RECOVERY_CASE="$1" \
     -v /var/run/docker.sock:/var/run/docker.sock -v "$PWD/harness:/harness:ro" \
     -v "$PWD/secrets:/run/live-secrets:ro" -v "$PWD/evidence:/evidence" -w /harness "$APP_IMAGE" python recovery_cases.py
 }
 restore_faults() {
   compose up -d --no-deps dojo dojo-web auditor-api bridge-worker >/dev/null
+  compose restart dojo-web >/dev/null
   for suffix in create-proxy callback-proxy; do
     if dock container inspect "$COMPOSE_PROJECT_NAME-$suffix" >/dev/null 2>&1; then
       dock rm -f "$COMPOSE_PROJECT_NAME-$suffix" >/dev/null
@@ -43,6 +44,8 @@ case "${1:-}" in
     done
     compose run --rm --no-deps --entrypoint python auditor-api scripts/seed.py > evidence/catalog-seed.log 2>&1
     compose up -d --no-deps dojo dojo-worker dojo-web auditor-api auditor-worker auditor-poller bridge-worker > evidence/app-up.log 2>&1
+    # The upstream nginx image resolves its uwsgi host only when it starts.
+    compose restart dojo-web >> evidence/app-up.log 2>&1
     compose exec -T -u root gitlab install -o git -g git -m 0600 /run/live-secrets/gitlab-token /var/opt/gitlab/.auditor-api-token
     sed 's@/run/live-secrets/gitlab-token@/var/opt/gitlab/.auditor-api-token@g' harness/bootstrap_gitlab.rb | compose exec -T gitlab gitlab-rails runner - > evidence/gitlab-bootstrap.json
     scenario bootstrap_api.py
@@ -77,8 +80,10 @@ case "${1:-}" in
     printf '%s\n' '{"services":{"dojo":{"environment":{"AUDITOR_BRIDGE_URL":"http://auditor-proxy:8000"}}}}' > compose.fault.json
     compose stop bridge-worker >/dev/null
     dock compose -f compose.json -f compose.fault.json up -d --no-deps dojo >/dev/null
+    compose restart dojo-web >/dev/null
     scenario lost_create.py
     compose up -d --no-deps dojo >/dev/null
+    compose restart dojo-web >/dev/null
     compose start bridge-worker >/dev/null
     dock run -d --name "$COMPOSE_PROJECT_NAME-callback-proxy" --network "container:$COMPOSE_PROJECT_NAME-dojo-web-1" \
       --user "$(id -u):$(id -g)" -e UPSTREAM=http://127.0.0.1:8080 -e DROP_PATH=/api/v2/auditor/callback/ \

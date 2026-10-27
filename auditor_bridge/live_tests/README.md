@@ -14,8 +14,8 @@ using the host Python standard library; it imports no application dependencies.
   consumes about 6 GiB of image storage. Stop if the chosen ports are occupied;
   select another explicitly authorized stand rather than changing an existing service.
 - An Auditor source checkout with the immutable report snapshot API, commit
-  `7b2e8d4611983828c051723600ddefb55721521d` or newer. The final documentation
-  checks used `c60e84c5603d50a72512aff441b09d1e49b89a6c`.
+  `7b2e8d4611983828c051723600ddefb55721521d` or newer. The complete packaged
+  fresh run used `161eaf30a17e9ff9dcd09ae220bb616dad2a2095`.
 - Three already prepared scanner images in a local source registry:
   `auditor/gitleaks:8.30.1`, `auditor/detect-secrets:1.5.0`,
   `auditor/opengrep:1.22.0-rules-f1d2b56`. Set `SCANNER_SOURCE_REGISTRY`
@@ -112,12 +112,41 @@ Publish only reviewed, sanitized summaries such as the included `acceptance.json
 Before publication compare every output with actual secret-file values; require
 zero matches. Do not capture GitLab webhook request headers (they contain tokens).
 
-The qualified run and its individual commands are recorded in `acceptance.json`.
-The packaged generator passed Compose configuration and Docker Python compilation
-checks. A second complete fresh-stand run was not performed after packaging:
-the qualified host had only about 2.2 GiB free. This distinction is intentional.
-The acceptance scripts were also formatted with upstream Ruff after the live run;
-selected packaged scenarios and read-back were rechecked against the live stand.
+`acceptance.json` preserves the original stand's historical evidence, including
+its original packaging limitations. `fresh-acceptance.json` records the complete
+packaged fresh installation on 2026-10-27: new directory, Compose project,
+secrets, databases and private fixtures; `setup`, all `core`, `recovery`, `review`
+scenarios and `final_evidence.py` passed. It contains exact source revisions,
+commands, new scan/callback IDs and the independent native database read-back.
+The clean run produced **17 native Tests and 544 findings**, with equal Auditor
+report, import-receipt, Dojo REST and database counts. All 17 imports have
+acknowledged callbacks; the real Runner completed 18 successful jobs. These are
+new results, not the original stand's larger totals from repeated scenarios.
+
+Fresh setup exposed two orchestration defects, both fixed in this package:
+`sudo` filters inherited environment variables, so project identity is passed
+as an explicit Docker `-e NAME=value`; nginx retains the resolved uwsgi address,
+so the harness restarts `dojo-web` after backend recreation in setup/recovery.
+Setup succeeded on its third invocation after those fixes. Both regressions
+fail against the original script and pass after the fix. Four packaging tests
+and twelve bridge contract tests passed in Docker.
+
+Run the packaging checks from a generated stand without installing host dependencies:
+
+```sh
+source config.sh
+sudo docker run --rm --network none --read-only --tmpfs /tmp:exec,size=64m \
+  -e PYTHONDONTWRITEBYTECODE=1 -v "$DOJO_SOURCE:/work:ro" -w /work \
+  "$APP_IMAGE" python -B -m unittest \
+  auditor_bridge.live_tests.test_run_sh auditor_bridge.live_tests.test_git_askpass -v
+```
+
+This machine started with about 2.2 GiB free, so existing image layers and bounded
+tmpfs were used. The previous dedicated stand was backed up and stopped; its
+source and evidence were retained. Unrelated Docker resources were preserved.
+The new stand was left running. OpenGrep reported partial analysis of 88 Juice
+Shop files and 14 NodeGoat files, plus two Juice Shop files skipped for size and
+two for ignore rules. Successful import does not imply complete scanner coverage.
 The final packaging review also restored the Git credential helper: it reads
 the token file only for the isolated `http://gitlab` service. Its Docker routing
 tests and a private-repository `git ls-remote` check cover the packaged helper.
