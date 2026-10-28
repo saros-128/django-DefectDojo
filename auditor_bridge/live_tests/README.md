@@ -2,12 +2,12 @@
 
 This directory recreates an **isolated, disposable** GitLab CE, Docker Runner,
 Auditor, DefectDojo and scanner registry stand. Application code, API scenarios,
-migrations and scanners execute in Docker. `prepare.py` only writes configuration
-using the host Python standard library; it imports no application dependencies.
+migrations and scanners execute in Docker. Run configuration generation in a
+container too, preserving absolute host paths for subsequent Docker bind mounts.
 
 ## Requirements and isolation
 
-- Linux Docker Engine and Compose v2, Git and Python 3 standard library. No pip,
+- Linux Docker Engine and Compose v2, Git. No pip,
   npm or system package installation on the host. Passwordless `sudo docker`
   is the default; set `LIVE_DOCKER_SUDO=0` when Docker is directly accessible.
 - Recommended: 32 GiB RAM, 20 GiB free disk before pulling images. GitLab alone
@@ -39,7 +39,10 @@ must run only on a trusted, disposable test machine.
 From the Dojo checkout, provide a new directory and the existing Auditor source:
 
 ```sh
-python3 auditor_bridge/live_tests/prepare.py \
+# /absolute/path contains both source directories and the new stand directory.
+sudo docker run --rm --user "$(id -u):$(id -g)" \
+  -v /absolute/path:/absolute/path -w "$PWD" \
+  --entrypoint python auditor-app:ubuntu auditor_bridge/live_tests/prepare.py \
   --root /absolute/path/auditor-live-stand \
   --auditor-source /absolute/path/Auditor \
   --project auditor-asoc-live-repro
@@ -54,6 +57,8 @@ bash /absolute/path/auditor-live-stand/harness/run.sh scenario final_evidence.py
 loopback ports together. Source checkouts are read, not modified. Secrets are
 randomly generated under a 0700 directory, in 0600 files, and never printed.
 Dojo's separate token directory is owned by container user `1001:1337`.
+For a source archive without `.git`, export `AUDITOR_SOURCE_REVISION` from its
+release manifest before setup; `AUDITOR_VERSION` defaults to `0.3.5`.
 
 Setup can take several minutes for GitLab and Dojo migrations. It creates a
 separate Reporter service account restricted to the fixture group, with only

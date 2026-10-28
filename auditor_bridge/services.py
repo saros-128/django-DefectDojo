@@ -65,9 +65,40 @@ def upsert_repository(data):
                                             engagement=engagement, inventory=data)
     else:
         # Path is display metadata. A rename or transfer never changes identity.
-        Product.objects.filter(pk=row.product_id).update(description=description)
+        if row.product_managed:
+            Product.objects.filter(pk=row.product_id).update(description=description)
         row.inventory = data
         row.save(update_fields=["inventory", "updated_at"])
+    return row
+
+
+@transaction.atomic
+def bind_repository(repository_pk, product_id, expected_product_id):
+    """Group discovered repositories before importing their first scan.
+
+    Each repository keeps its own Engagement and identity. Reparenting existing
+    findings is a separate Dojo operation, never a side effect of inventory sync.
+    """
+    from dojo.models import Product  # noqa: PLC0415 -- avoid model import cycles
+
+    row = RepositoryLink.objects.get(pk=repository_pk)
+    lock("repository:" + row.identity_key)
+    row = RepositoryLink.objects.select_for_update().get(pk=repository_pk)
+    if row.product_id == product_id:
+        return row
+    if row.product_id != expected_product_id:
+        msg = "repository_binding_conflict"
+        raise BridgeError(msg)
+    if ScanImport.objects.filter(repository=row).exists():
+        msg = "repository_has_imports_conflict"
+        raise BridgeError(msg)
+    product = Product.objects.get(pk=product_id)
+    engagement = row.engagement
+    engagement.product = product
+    engagement.save(update_fields=["product"])
+    row.product = product
+    row.product_managed = False
+    row.save(update_fields=["product", "product_managed", "updated_at"])
     return row
 
 
@@ -242,6 +273,10 @@ def synchronize_profile(key):
 
 
 def generic_report(report):
+    if "coverage" in report and (not isinstance(report["coverage"], dict)
+                                  or report["coverage"].get("status") not in {"complete", "partial"}):
+        msg = "unknown_scan_coverage"
+        raise BridgeError(msg)
     findings = report.get("findings")
     if (not isinstance(findings, list) or report.get("finding_count") != len(findings)
             or len(findings) > 50000 or report.get("artifact_parse_errors")):
@@ -337,6 +372,7 @@ def callback(payload):
                 raise BridgeError(msg)
             return previous.acknowledgement
         lock("scan:" + scan_id)
+        lock("repository:" + digest(ident))
         repository = RepositoryLink.objects.filter(identity_key=digest(ident)).first()
         if repository is None and os.environ.get("AUDITOR_BRIDGE_AUTO_CREATE", "true").lower() == "true":
             metadata = trusted_inventory_repository(ident)
@@ -367,6 +403,7 @@ def callback(payload):
                 test_id, count = import_report(repository, scan_id, payload.get("commit_sha"), converted)
                 ScanImport.objects.create(scan_id=scan_id, repository=repository, test_id=test_id,
                                           report_digest=digest(report), finding_count=count,
+                                          coverage_status=report.get("coverage", {}).get("status", "unknown"),
                                           commit_sha=payload.get("commit_sha") or "")
                 ack["report_status"] = "imported"
         CallbackReceipt.objects.create(callback_id=callback_id, payload_digest=fingerprint, acknowledgement=ack)

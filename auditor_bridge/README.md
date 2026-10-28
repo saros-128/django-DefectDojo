@@ -153,3 +153,45 @@ stand uses explicitly temporary, bounded RAM volumes; its separate harness
 runbook recreates users, repositories, hooks, profiles and fixtures. Source SHAs,
 scenario results and sanitized evidence stay on disk. Never use global Docker
 prune or remove volumes belonging to another installation.
+
+## Auditor 0.3.5: repository grouping and coverage
+
+Apply bridge migration `0003` in the Dojo container before starting the updated
+API and reconciliation worker. Several repository identities can now share an
+existing Dojo Product; each retains its own Engagement. Bind before the first
+report import using an authenticated superuser request:
+
+```http
+PUT /api/v2/auditor/repositories/<inventory-row-id>/binding/
+Content-Type: application/json
+
+{"product_id": 7, "expected_product_id": 12}
+```
+
+Read back `product_id`, `engagement_id` and repository identity. The expected
+previous Product protects against concurrent edits. A stale expectation or
+moving a repository with existing imports returns 409. Repeating the same
+binding is idempotent. Inventory refresh/rename does not overwrite an
+operator-owned Product description. Moving historical findings is deliberately
+a separate Dojo operation. Reverse migration refuses to restore OneToOne if
+multiple repositories share a Product: restore a consistent backup instead.
+
+`GET /api/v2/auditor/imports/` exposes `coverage_status`. Complete and partial
+reports may be imported; partial must remain visible as incomplete analysis.
+Unknown coverage, failed jobs and malformed reports are rejected. Legacy
+reports without the additive coverage field retain the previous validation.
+The callback wire ACK contains only the stable Auditor acknowledgement fields;
+internal coverage metadata is not added to that closed contract.
+
+The bridge continues to synchronize direct sequence profiles and automations.
+Auditor Product/repository inheritance is configured through Auditor 0.3.5
+`/api/v1/products` and `/api/v1/scan-policies`; grouping a Product in Dojo does
+not implicitly create that separate policy. Keep and verify both identities
+when adding an ASOC policy client.
+
+Secret files mounted into Dojo must be readable by its container UID/GID
+(the qualified image uses UID 1001/GID 1337), with restrictive permissions.
+An unavailable secret is reported as a sanitized configuration error. Run the
+repository's `run-unittest.sh` wrapper for bridge tests, and containerized
+`manage.py check`, `makemigrations --check --dry-run auditor_bridge` and API
+schema checks when upgrading the pinned upstream image.

@@ -16,6 +16,11 @@ class StepSerializer(StrictSerializer):
     job_slug = serializers.RegexField(r"^[a-z0-9][a-z0-9_-]{0,127}$")
 
 
+class RepositoryBindingSerializer(StrictSerializer):
+    product_id = serializers.IntegerField(min_value=1)
+    expected_product_id = serializers.IntegerField(min_value=1)
+
+
 class ScheduleSerializer(StrictSerializer):
     kind = serializers.ChoiceField(["interval", "weekly"])
     interval_seconds = serializers.IntegerField(min_value=60, max_value=31536000, required=False)

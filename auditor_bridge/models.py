@@ -9,7 +9,8 @@ class RepositoryLink(models.Model):
     instance = models.CharField(max_length=512)
     repository_id = models.CharField(max_length=128)
     inventory = models.JSONField(default=dict)
-    product = models.OneToOneField("dojo.Product", on_delete=models.PROTECT)
+    product = models.ForeignKey("dojo.Product", on_delete=models.PROTECT)
+    product_managed = models.BooleanField(default=True)
     engagement = models.OneToOneField("dojo.Engagement", on_delete=models.PROTECT)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -21,6 +22,7 @@ class ScanImport(models.Model):
     report_digest = models.CharField(max_length=64)
     commit_sha = models.CharField(max_length=64, default="")
     finding_count = models.PositiveIntegerField()
+    coverage_status = models.CharField(max_length=16, default="unknown")
     created_at = models.DateTimeField(auto_now_add=True)
 
 

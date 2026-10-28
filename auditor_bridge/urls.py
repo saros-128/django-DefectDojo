@@ -15,6 +15,7 @@ urlpatterns = [
     path("api/v2/auditor/profiles/<slug:key>/sync/", views.ProfileSyncView.as_view()),
     path("api/v2/auditor/profiles/<slug:key>/disable/", views.ProfileDisableView.as_view()),
     path("api/v2/auditor/repositories/", views.InventoryView.as_view()),
+    path("api/v2/auditor/repositories/<int:repository_pk>/binding/", views.RepositoryBindingView.as_view()),
     path("api/v2/auditor/imports/", views.ImportsView.as_view()),
     path("api/v2/auditor/callback/", views.CallbackView.as_view()),
     *dojo_urlpatterns,

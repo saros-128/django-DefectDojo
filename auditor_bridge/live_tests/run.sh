@@ -29,7 +29,13 @@ restore_faults() {
 }
 case "${1:-}" in
   setup)
-    dock build -f "$AUDITOR_SOURCE/docker/app.Dockerfile" -t "$APP_IMAGE" "$AUDITOR_SOURCE" > evidence/build-auditor.log 2>&1
+    source_revision="${AUDITOR_SOURCE_REVISION:-$(git -C "$AUDITOR_SOURCE" rev-parse HEAD 2>/dev/null || true)}"
+    if [[ -z "$source_revision" && -f "$AUDITOR_SOURCE/SOURCE_REVISION" ]]; then
+      source_revision="$(cat "$AUDITOR_SOURCE/SOURCE_REVISION")"
+    fi
+    [[ "$source_revision" =~ ^[0-9a-f]{40}$ ]] || { echo 'Set AUDITOR_SOURCE_REVISION to the exact runtime source commit' >&2; exit 2; }
+    dock build --build-arg "APP_VERSION=${AUDITOR_VERSION:-0.3.5}" --build-arg "SOURCE_REVISION=$source_revision" \
+      -f "$AUDITOR_SOURCE/docker/app.Dockerfile" -t "$APP_IMAGE" "$AUDITOR_SOURCE" > evidence/build-auditor.log 2>&1
     dock build -f "$DOJO_SOURCE/auditor_bridge/deploy/Dockerfile" -t "$BRIDGE_IMAGE" "$DOJO_SOURCE" > evidence/build-dojo.log 2>&1
     sudo -n install -d -o 1001 -g 1337 -m 0700 secrets/dojo-service
     for secret_file in auditor-admin callback-token; do sudo -n install -o 1001 -g 1337 -m 0600 "secrets/$secret_file" "secrets/dojo-service/$secret_file"; done

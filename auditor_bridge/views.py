@@ -14,7 +14,7 @@ from auditor_bridge import client, services
 from auditor_bridge.authentication import CallbackAuthentication
 from auditor_bridge.config import BridgeError
 from auditor_bridge.models import InventoryState, Profile, RepositoryLink, ScanImport
-from auditor_bridge.serializers import CallbackSerializer, ProfileSerializer
+from auditor_bridge.serializers import CallbackSerializer, ProfileSerializer, RepositoryBindingSerializer
 
 
 class SuperuserOnly(BasePermission):
@@ -121,6 +121,24 @@ class InventoryView(AdminView):
             return Response({"error": str(exc)}, status=502)
 
 
+@extend_schema_view(put=extend_schema(request=RepositoryBindingSerializer, responses=OpenApiTypes.OBJECT))
+class RepositoryBindingView(AdminView):
+    def put(self, request, repository_pk):
+        from dojo.models import Product  # noqa: PLC0415 -- avoid model import cycles
+
+        serializer = RepositoryBindingSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        get_object_or_404(RepositoryLink, pk=repository_pk)
+        get_object_or_404(Product, pk=serializer.validated_data["product_id"])
+        try:
+            row = services.bind_repository(repository_pk, **serializer.validated_data)
+        except BridgeError as exc:
+            return Response({"error": str(exc)}, status=409)
+        return Response({"id": row.pk, "provider": row.provider, "instance": row.instance,
+                         "repository_id": row.repository_id, "product_id": row.product_id,
+                         "engagement_id": row.engagement_id, "product_managed": row.product_managed})
+
+
 @extend_schema_view(get=extend_schema(responses=OpenApiTypes.ANY))
 class ImportsView(AdminView):
     def get(self, request):
@@ -140,7 +158,12 @@ class CallbackView(APIView):
         if key and key != payload["callback_id"]:
             return Response({"error": "idempotency_key_mismatch"}, status=409)
         try:
-            return Response(services.callback(payload))
+            acknowledgement = services.callback(payload)
+            # The wire ACK is deliberately closed. Coverage stays in ScanImport
+            # and /imports; adding internal metadata must not break old Auditors.
+            keys = {"scan_id", "provider", "instance", "repository_id", "project_found",
+                    "project_id", "report_status"}
+            return Response({key: value for key, value in acknowledgement.items() if key in keys})
         except BridgeError as exc:
             code = str(exc)
             status = 409 if code.endswith("conflict") else 502 if code.startswith("auditor_") else 400

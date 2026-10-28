@@ -1,4 +1,4 @@
-"""Generate an isolated stand using only Python's standard library on the host."""
+"""Generate an isolated stand inside a container, preserving absolute bind paths."""
 import argparse
 import base64
 import json

@@ -35,7 +35,11 @@ def auditor_url():
 
 
 def secret(name):
-    value = Path(os.environ[name + "_FILE"]).read_text(encoding="utf-8").strip()
+    try:
+        value = Path(os.environ[name + "_FILE"]).read_text(encoding="utf-8").strip()
+    except (KeyError, OSError, UnicodeError) as exc:
+        msg = "unavailable_secret_configuration"
+        raise BridgeError(msg) from exc
     if len(value) < 24:
         msg = "invalid_secret_configuration"
         raise BridgeError(msg)
