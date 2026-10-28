@@ -1,0 +1,1925 @@
+{
+  "qualified_at": "2026-10-27",
+  "host": "saros-ub",
+  "auditor_runtime_commit": "7b2e8d4611983828c051723600ddefb55721521d",
+  "auditor_docs_commit": "c60e84c5603d50a72512aff441b09d1e49b89a6c",
+  "dojo_fork_base": "c38f24b7d58cb83c1f20949f5ee61d65c360885b",
+  "dojo_compatibility_version": "3.4.300",
+  "dojo_upstream_image": {
+    "image_id": "sha256:309f03f5e61d1a40d7b438c12ce82ae92236304c3a437d93a7d4b81d8839fcca",
+    "repo_digests": [
+      "defectdojo/defectdojo-django@sha256:309f03f5e61d1a40d7b438c12ce82ae92236304c3a437d93a7d4b81d8839fcca"
+    ]
+  },
+  "gitlab_version": {
+    "version": "19.5.0",
+    "revision": "4c9e34e1faa",
+    "kas": {
+      "enabled": false,
+      "externalUrl": null,
+      "externalK8sProxyUrl": null,
+      "version": null
+    },
+    "enterprise": false
+  },
+  "images": {
+    "gitlab": {
+      "reference": "gitlab/gitlab-ce:19.5.0-ce.0",
+      "image_id": "sha256:6cde3a3fc33c8261310422c570da962a987bc1e8a08489a03cb7017d3cf452fc",
+      "repo_digests": [
+        "gitlab/gitlab-ce@sha256:6cde3a3fc33c8261310422c570da962a987bc1e8a08489a03cb7017d3cf452fc"
+      ]
+    },
+    "dojo-db": {
+      "reference": "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "image_id": "sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "repo_digests": [
+        "postgres@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777"
+      ]
+    },
+    "dojo-redis": {
+      "reference": "redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "image_id": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "repo_digests": [
+        "redis@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2"
+      ]
+    },
+    "dojo-init": {
+      "reference": "auditor-asoc-live-0110bdc8-dojo:bridge",
+      "image_id": "sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-dojo@sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c"
+      ]
+    },
+    "dojo": {
+      "reference": "auditor-asoc-live-0110bdc8-dojo:bridge",
+      "image_id": "sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-dojo@sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c"
+      ]
+    },
+    "dojo-worker": {
+      "reference": "auditor-asoc-live-0110bdc8-dojo:bridge",
+      "image_id": "sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-dojo@sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c"
+      ]
+    },
+    "dojo-web": {
+      "reference": "defectdojo/defectdojo-nginx:3.4.300",
+      "image_id": "sha256:6f8fc4c0d39bc24c708ce6bd473d123807cb5358deb74c863ce924f1b5f67b04",
+      "repo_digests": [
+        "defectdojo/defectdojo-nginx@sha256:6f8fc4c0d39bc24c708ce6bd473d123807cb5358deb74c863ce924f1b5f67b04"
+      ]
+    },
+    "scanner-registry": {
+      "reference": "sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373",
+      "image_id": "sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373",
+      "repo_digests": [
+        "registry@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373"
+      ]
+    },
+    "auditor-db": {
+      "reference": "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "image_id": "sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "repo_digests": [
+        "postgres@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777"
+      ]
+    },
+    "auditor-redis": {
+      "reference": "redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "image_id": "sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "repo_digests": [
+        "redis@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2"
+      ]
+    },
+    "openbao": {
+      "reference": "openbao/openbao:2.5.4@sha256:436eaf9778cad75507ff70ea26ace30dcbe15606e619ac3823495663d7f7c115",
+      "image_id": "sha256:436eaf9778cad75507ff70ea26ace30dcbe15606e619ac3823495663d7f7c115",
+      "repo_digests": [
+        "openbao/openbao@sha256:436eaf9778cad75507ff70ea26ace30dcbe15606e619ac3823495663d7f7c115"
+      ]
+    },
+    "auditor-api": {
+      "reference": "auditor-asoc-live-0110bdc8-app:7b2e8d",
+      "image_id": "sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-app@sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac"
+      ]
+    },
+    "auditor-worker": {
+      "reference": "auditor-asoc-live-0110bdc8-app:7b2e8d",
+      "image_id": "sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-app@sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac"
+      ]
+    },
+    "auditor-poller": {
+      "reference": "auditor-asoc-live-0110bdc8-app:7b2e8d",
+      "image_id": "sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-app@sha256:cb25a3b91bd747ed84d0881c29ee9ee5f9f104e2431bc2600b43adb5b8a136ac"
+      ]
+    },
+    "bridge-worker": {
+      "reference": "auditor-asoc-live-0110bdc8-dojo:bridge",
+      "image_id": "sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c",
+      "repo_digests": [
+        "auditor-asoc-live-0110bdc8-dojo@sha256:b80d462e8c6c055fce7c0f49142f78ff560431a40471174ec2758d907b2c650c"
+      ]
+    },
+    "gitlab-runner": {
+      "reference": "gitlab/gitlab-runner:alpine-v19.5.0",
+      "image_id": "sha256:b7dead3b57cd9e5e5d6aedc6c0736c43972af9a24aa19875c2802bc8afcd3978",
+      "repo_digests": [
+        "gitlab/gitlab-runner@sha256:b7dead3b57cd9e5e5d6aedc6c0736c43972af9a24aa19875c2802bc8afcd3978"
+      ]
+    }
+  },
+  "scanners": {
+    "gitleaks:8.30.1": {
+      "image_id": "sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+      "repo_digests": [
+        "zricethezav/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+        "localhost:18084/auditor/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+        "localhost:5000/auditor/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f"
+      ]
+    },
+    "detect-secrets:1.5.0": {
+      "image_id": "sha256:4ebd56e7d59017e68400904feff83f11144a9dafea21e93be1b6854d458b14e9",
+      "repo_digests": [
+        "detect-secrets@sha256:4ebd56e7d59017e68400904feff83f11144a9dafea21e93be1b6854d458b14e9",
+        "localhost:18084/auditor/detect-secrets@sha256:4ebd56e7d59017e68400904feff83f11144a9dafea21e93be1b6854d458b14e9",
+        "localhost:5000/auditor/detect-secrets@sha256:4ebd56e7d59017e68400904feff83f11144a9dafea21e93be1b6854d458b14e9"
+      ]
+    },
+    "opengrep:1.22.0-rules-f1d2b56": {
+      "image_id": "sha256:28f68618c1426f7c422bc117204b50377a9c18026d6f823936579ae84b405bdb",
+      "repo_digests": [
+        "opengrep@sha256:28f68618c1426f7c422bc117204b50377a9c18026d6f823936579ae84b405bdb",
+        "localhost:18084/auditor/opengrep@sha256:28f68618c1426f7c422bc117204b50377a9c18026d6f823936579ae84b405bdb",
+        "localhost:5000/auditor/opengrep@sha256:28f68618c1426f7c422bc117204b50377a9c18026d6f823936579ae84b405bdb"
+      ]
+    }
+  },
+  "upstream_fixtures": {
+    "group_id": 2,
+    "projects": [
+      {
+        "project_id": 1,
+        "path": "auditor-live/juice-shop",
+        "upstream": "https://github.com/juice-shop/juice-shop.git",
+        "upstream_sha": "717f5efa886b0417eeecb52378b03cf10567b7e2",
+        "fixture_sha": "a8b2084c9554451b5f8ed549022d6eb43383bc0c",
+        "default_branch": "main"
+      },
+      {
+        "project_id": 2,
+        "path": "auditor-live/nodegoat",
+        "upstream": "https://github.com/OWASP/NodeGoat.git",
+        "upstream_sha": "c5cb68a7084e4ae7dcc60e6a98768720a81841e8",
+        "fixture_sha": "940bf73289d6f5f24739b27653bdd2e562871e4e",
+        "default_branch": "main"
+      }
+    ]
+  },
+  "full_regression": {
+    "source_commit": "7b2e8d4611983828c051723600ddefb55721521d",
+    "script": "scripts/test.sh",
+    "container_only": true,
+    "passed": 1577,
+    "skipped": 1,
+    "deselected": 1,
+    "coverage_percent": 90.31,
+    "exit_code": 0,
+    "skip_reason": "No seeded harbor_config row in test database",
+    "deselection": "external marker",
+    "driver": {
+      "started_at_moscow": "2026-10-27T20:15:07.808368+03:00",
+      "finished_at_moscow": "2026-10-27T20:18:13.819778+03:00",
+      "elapsed_seconds": 186.01,
+      "driver_exit_code": 0,
+      "disk_guard_triggered": false,
+      "minimum_free_bytes": 2398093312,
+      "final_free_bytes": 2414624768
+    }
+  },
+  "docs_targeted": {
+    "source_commit": "c60e84c5603d50a72512aff441b09d1e49b89a6c",
+    "passed": 8,
+    "container_only": true
+  },
+  "bridge_checks": {
+    "unit_tests_passed": 12,
+    "ruff_version": "0.16.10",
+    "ruff": "PASS",
+    "django_check": "PASS",
+    "migration_guard": "PASS",
+    "openapi_fail_on_warn": "PASS",
+    "upstream_compose_settings_and_migrations": "PASS"
+  },
+  "events": {
+    "push": {
+      "scan_id": "ed72d6f7-dfb7-4867-bdcb-11e7c1b15974",
+      "test_id": 15,
+      "finding_count": 3
+    },
+    "merge_request.opened": {
+      "scan_id": "fb426d3e-52d9-4bf1-b242-578ea850952d",
+      "test_id": 16,
+      "finding_count": 3
+    },
+    "merge_request.updated": {
+      "scan_id": "5124c32e-ec3b-4aa6-b752-1ffc963d2d8b",
+      "test_id": 17,
+      "finding_count": 3
+    },
+    "merge_request.merged": {
+      "scan_id": "7695432d-1d2a-4e7a-8774-fa46ad643830",
+      "test_id": 18,
+      "finding_count": 3
+    },
+    "tag.created": {
+      "scan_id": "fa3bd6b1-fff3-48f7-9637-275dce737179",
+      "test_id": 19,
+      "finding_count": 3
+    },
+    "release.published": {
+      "scan_id": "117b5049-f3db-4531-bee2-3a936f4123ed",
+      "test_id": 20,
+      "finding_count": 3
+    },
+    "pipeline.succeeded": {
+      "scan_id": "6dcc4e6c-b350-439f-a70c-714864ae5fb4",
+      "test_id": 21,
+      "finding_count": 3
+    },
+    "deployment.succeeded": {
+      "scan_id": "f6e9f866-f08d-49c3-804d-3b55ffe1dff1",
+      "test_id": 23,
+      "finding_count": 3
+    },
+    "repository.discovered": {
+      "scan_id": "53b4eb85-bc9e-4fc2-8065-45376a7a0e6e",
+      "test_id": 14,
+      "finding_count": 1,
+      "callback_only_create": true
+    }
+  },
+  "schedules": {
+    "configured_at": "2026-10-27T17:16:45.360226+00:00",
+    "weekly_target": "2026-10-27T17:18:00+00:00",
+    "profiles": {
+      "interval": {
+        "key": "live-schedule-interval",
+        "sequence_id": "42b606b2-5ee9-4579-9daa-2ba99c5aaee2",
+        "desired": {
+          "name": "live-schedule-interval",
+          "steps": [
+            {
+              "job_slug": "code-downloader"
+            },
+            {
+              "job_slug": "gitleaks"
+            }
+          ],
+          "automations": [
+            {
+              "name": "live-schedule-interval",
+              "events": [],
+              "enabled": true,
+              "schedule": {
+                "kind": "interval",
+                "interval_seconds": 60
+              },
+              "ref_patterns": [
+                "@default"
+              ],
+              "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+              "repository_ids": [
+                2
+              ],
+              "max_scans_per_hour": 240
+            }
+          ],
+          "sg_blocking": false,
+          "asoc_integration_ids": [
+            "4d658254-a3de-4b97-a9d9-6fb3fdf43e76"
+          ]
+        },
+        "state": "synced",
+        "last_error": "",
+        "attempts": 1,
+        "next_attempt_at": null,
+        "remote": {
+          "sequence": {
+            "id": "42b606b2-5ee9-4579-9daa-2ba99c5aaee2",
+            "name": "live-schedule-interval",
+            "app_id": null,
+            "ws_portal_app_id": null,
+            "defectdojo_app_id": null,
+            "asoc_context": {},
+            "steps": [
+              {
+                "step": 1,
+                "job_slug": "code-downloader",
+                "overrides": {}
+              },
+              {
+                "step": 2,
+                "job_slug": "gitleaks",
+                "overrides": {}
+              }
+            ],
+            "asoc_integration_ids": [
+              "4d658254-a3de-4b97-a9d9-6fb3fdf43e76"
+            ],
+            "sg_blocking": false,
+            "source": "custom",
+            "created_at": "2026-10-27T17:16:46.402654Z",
+            "updated_at": "2026-10-27T17:16:46.402654Z"
+          },
+          "automations": [
+            {
+              "id": "dd3220a3-63e4-40aa-92e6-e79914163072",
+              "sequence_id": "42b606b2-5ee9-4579-9daa-2ba99c5aaee2",
+              "name": "live-schedule-interval",
+              "events": [],
+              "enabled": true,
+              "schedule": {
+                "hour": 0,
+                "kind": "interval",
+                "minute": 0,
+                "timezone": "UTC",
+                "weekdays": [],
+                "interval_seconds": 60
+              },
+              "ref_patterns": [
+                "@default"
+              ],
+              "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+              "repository_ids": [
+                2
+              ],
+              "max_scans_per_hour": 240,
+              "next_run_at": "2026-10-27T17:17:46.408414Z",
+              "last_error": null,
+              "created_at": "2026-10-27T17:16:46.402654Z"
+            }
+          ]
+        }
+      },
+      "weekly": {
+        "key": "live-schedule-weekly",
+        "sequence_id": "34038a5f-963a-4658-a8c2-ff06a60176f2",
+        "desired": {
+          "name": "live-schedule-weekly",
+          "steps": [
+            {
+              "job_slug": "code-downloader"
+            },
+            {
+              "job_slug": "gitleaks"
+            }
+          ],
+          "automations": [
+            {
+              "name": "live-schedule-weekly",
+              "events": [],
+              "enabled": true,
+              "schedule": {
+                "hour": 17,
+                "kind": "weekly",
+                "minute": 18,
+                "timezone": "UTC",
+                "weekdays": [
+                  1
+                ]
+              },
+              "ref_patterns": [
+                "@default"
+              ],
+              "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+              "repository_ids": [
+                2
+              ],
+              "max_scans_per_hour": 240
+            }
+          ],
+          "sg_blocking": false,
+          "asoc_integration_ids": [
+            "4d658254-a3de-4b97-a9d9-6fb3fdf43e76"
+          ]
+        },
+        "state": "synced",
+        "last_error": "",
+        "attempts": 1,
+        "next_attempt_at": null,
+        "remote": {
+          "sequence": {
+            "id": "34038a5f-963a-4658-a8c2-ff06a60176f2",
+            "name": "live-schedule-weekly",
+            "app_id": null,
+            "ws_portal_app_id": null,
+            "defectdojo_app_id": null,
+            "asoc_context": {},
+            "steps": [
+              {
+                "step": 1,
+                "job_slug": "code-downloader",
+                "overrides": {}
+              },
+              {
+                "step": 2,
+                "job_slug": "gitleaks",
+                "overrides": {}
+              }
+            ],
+            "asoc_integration_ids": [
+              "4d658254-a3de-4b97-a9d9-6fb3fdf43e76"
+            ],
+            "sg_blocking": false,
+            "source": "custom",
+            "created_at": "2026-10-27T17:16:46.456673Z",
+            "updated_at": "2026-10-27T17:16:46.456673Z"
+          },
+          "automations": [
+            {
+              "id": "46867f57-b6ce-48e2-aa1d-8a33cfd31b97",
+              "sequence_id": "34038a5f-963a-4658-a8c2-ff06a60176f2",
+              "name": "live-schedule-weekly",
+              "events": [],
+              "enabled": true,
+              "schedule": {
+                "hour": 17,
+                "kind": "weekly",
+                "minute": 18,
+                "timezone": "UTC",
+                "weekdays": [
+                  1
+                ],
+                "interval_seconds": null
+              },
+              "ref_patterns": [
+                "@default"
+              ],
+              "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+              "repository_ids": [
+                2
+              ],
+              "max_scans_per_hour": 240,
+              "next_run_at": "2026-10-27T17:18:00Z",
+              "last_error": null,
+              "created_at": "2026-10-27T17:16:46.456673Z"
+            }
+          ]
+        }
+      }
+    },
+    "results": {
+      "interval": {
+        "scan": {
+          "id": "2faafbff-f696-4724-8349-e0a3c7ef7c7c",
+          "source_type": "GIT",
+          "source_url": "http://gitlab/auditor-live/nodegoat.git",
+          "branch": "main",
+          "repository_identity": {
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "repository_id": "2"
+          },
+          "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+          "app_id": null,
+          "ws_portal_app_id": null,
+          "defectdojo_app_id": null,
+          "asoc_context": {},
+          "sequence_id": "42b606b2-5ee9-4579-9daa-2ba99c5aaee2",
+          "gitlab_integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+          "github_integration_id": null,
+          "git_credential_id": null,
+          "application_id": null,
+          "planning_mode": "sequence",
+          "plan_source": "sequence",
+          "plan_status": "completed",
+          "target_kind": "code_repo",
+          "target_profile": null,
+          "profile_options": null,
+          "scan_plan": {
+            "audit": [
+              {
+                "at": "2026-10-27T17:17:48.053118+00:00",
+                "actor": "system",
+                "event": "plan_created"
+              },
+              {
+                "at": "2026-10-27T17:17:48.130432+00:00",
+                "actor": "worker",
+                "event": "plan_materialized"
+              }
+            ],
+            "steps": [
+              {
+                "enabled": true,
+                "step_id": "000-code-downloader",
+                "category": null,
+                "job_slug": "code-downloader",
+                "position": 0,
+                "overrides": {},
+                "resources": {
+                  "cpu": 0.5,
+                  "memory_mb": 512
+                },
+                "depends_on": [],
+                "target_ids": [],
+                "job_version": 1,
+                "generated_by": "sequence",
+                "reason_codes": [
+                  "SEQUENCE_STEP"
+                ],
+                "allow_failure": null,
+                "workspace_subdir": null,
+                "job_name_snapshot": "Code Downloader",
+                "selection_evidence": {},
+                "pipeline_output_subdir": null
+              },
+              {
+                "enabled": true,
+                "step_id": "001-gitleaks",
+                "category": null,
+                "job_slug": "gitleaks",
+                "position": 1,
+                "overrides": {},
+                "resources": {
+                  "cpu": 1,
+                  "memory_mb": 1024
+                },
+                "depends_on": [
+                  "000-code-downloader"
+                ],
+                "target_ids": [],
+                "job_version": 1,
+                "generated_by": "sequence",
+                "reason_codes": [
+                  "SEQUENCE_STEP"
+                ],
+                "allow_failure": null,
+                "workspace_subdir": null,
+                "job_name_snapshot": "Gitleaks",
+                "selection_evidence": {},
+                "pipeline_output_subdir": null
+              }
+            ],
+            "source": "sequence",
+            "status": "completed",
+            "plan_id": "a7fb78fc-bdf3-4bbd-9981-319bf52bfc2f",
+            "targets": [],
+            "version": 1,
+            "warnings": [],
+            "created_at": "2026-10-27T17:17:48.053112+00:00",
+            "ambiguities": [],
+            "target_kind": "code_repo",
+            "filtered_signals": [],
+            "created_from_profile_id": null
+          },
+          "scan_plan_revision": 1,
+          "auto_launch": true,
+          "profile_error": null,
+          "plan_error": null,
+          "status": "COMPLETED",
+          "priority_score": -70.0,
+          "sg_blocking": false,
+          "criticality": 5,
+          "artifact_retention_hours": 168,
+          "security_gate_min_severity": "high",
+          "created_at": "2026-10-27T17:17:47.871670Z",
+          "started_at": "2026-10-27T17:17:48.132101Z",
+          "completed_at": "2026-10-27T17:17:50.372029Z",
+          "artifact_expires_at": "2026-11-03T17:17:50.372029Z",
+          "artifacts_status": "AVAILABLE",
+          "artifacts_cleaned_at": null,
+          "error_message": null,
+          "verdict": {
+            "counts": {
+              "low": 0,
+              "high": 3,
+              "info": 0,
+              "medium": 0,
+              "unknown": 0,
+              "critical": 0
+            },
+            "status": "failed",
+            "blocked": false,
+            "enforced": false,
+            "scan_scope": "full",
+            "evaluated_at": "2026-10-27T17:17:50.378547+00:00",
+            "finding_count": 3,
+            "schema_version": 2,
+            "findings_sample": [
+              {
+                "id": "private-key",
+                "cwe": [],
+                "line": 1,
+                "path": "artifacts/cert/server.key",
+                "title": "Identified a Private Key, which may compromise cryptographic security and sensitive data encryption.",
+                "artifact": "gitleaks.json",
+                "end_line": 15,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 30,
+                "fingerprint": "/workspace/artifacts/cert/server.key:private-key:1",
+                "start_column": 1,
+                "finding_class": "secrets"
+              },
+              {
+                "id": "generic-api-key",
+                "cwe": [],
+                "line": 6,
+                "path": "config/env/development.js",
+                "title": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+                "artifact": "gitleaks.json",
+                "end_line": 6,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 43,
+                "fingerprint": "/workspace/config/env/development.js:generic-api-key:6",
+                "start_column": 5,
+                "finding_class": "secrets"
+              },
+              {
+                "id": "generic-api-key",
+                "cwe": [],
+                "line": 6,
+                "path": "config/env/test.js",
+                "title": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+                "artifact": "gitleaks.json",
+                "end_line": 6,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 43,
+                "fingerprint": "/workspace/config/env/test.js:generic-api-key:6",
+                "start_column": 5,
+                "finding_class": "secrets"
+              }
+            ],
+            "failed_job_count": 0,
+            "highest_severity": "high",
+            "minimum_severity": "high",
+            "artifact_parse_errors": [],
+            "threshold_finding_count": 3,
+            "artifact_parse_error_count": 0
+          },
+          "asoc_integration_ids": [],
+          "asoc_delivery": [
+            {
+              "error": "ASOC delivery disabled for this job/provider",
+              "status": "SKIPPED",
+              "step_id": "ae770468-063d-4a63-945c-e3a0f28de65a",
+              "job_name": "Gitleaks",
+              "job_slug": "gitleaks",
+              "provider": "custom_http",
+              "created_at": "2026-10-27T17:17:50.404963+00:00",
+              "target_url": null,
+              "report_file": null,
+              "result_urls": {},
+              "status_code": null,
+              "external_refs": {},
+              "external_urls": {},
+              "import_result": {},
+              "integration_id": "4d658254-a3de-4b97-a9d9-6fb3fdf43e76",
+              "integration_name": "Dojo transactional bridge live",
+              "response_excerpt": null,
+              "response_mapping": {}
+            }
+          ],
+          "ci_delivery": {
+            "error": "GitLab status API returned HTTP 403",
+            "state": "success",
+            "status": "failed",
+            "provider": "gitlab",
+            "updated_at": "2026-10-27T17:17:50.400883+00:00",
+            "status_code": 403
+          },
+          "webhook_context": {
+            "event": "schedule",
+            "provider": "gitlab",
+            "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+            "project_id": "2",
+            "repository": "auditor-live/nodegoat",
+            "trigger_type": "schedule",
+            "automation_id": "dd3220a3-63e4-40aa-92e6-e79914163072"
+          },
+          "job_runs": [
+            {
+              "id": "3e63233d-52d8-4884-869b-abde1f84a6c4",
+              "position": 0,
+              "job_slug": "code-downloader",
+              "job_name_snapshot": "Code Downloader",
+              "job_version": 1,
+              "status": "COMPLETED",
+              "started_at": "2026-10-27T17:17:48.152609Z",
+              "completed_at": "2026-10-27T17:17:48.837778Z",
+              "exit_code": 0,
+              "artifact_ref": {
+                "backend": "fs",
+                "relative_path": "scans/2faafbff-f696-4724-8349-e0a3c7ef7c7c/code-downloader",
+                "files": [
+                  "metadata.json",
+                  "stderr.log",
+                  "stdout.log"
+                ]
+              },
+              "log_ref": {
+                "backend": "fs",
+                "stdout": "stdout.log",
+                "stderr": "stderr.log"
+              },
+              "requested_cpu": 0.5,
+              "requested_memory_mb": 512,
+              "duration_s": 0.682683162000103,
+              "resource_metrics": {
+                "backend": "local",
+                "samples": [],
+                "sample_count": 0
+              }
+            },
+            {
+              "id": "ae770468-063d-4a63-945c-e3a0f28de65a",
+              "position": 1,
+              "job_slug": "gitleaks",
+              "job_name_snapshot": "Gitleaks",
+              "job_version": 1,
+              "status": "COMPLETED",
+              "started_at": "2026-10-27T17:17:48.840286Z",
+              "completed_at": "2026-10-27T17:17:50.370849Z",
+              "exit_code": 0,
+              "artifact_ref": {
+                "backend": "fs",
+                "relative_path": "scans/2faafbff-f696-4724-8349-e0a3c7ef7c7c/gitleaks",
+                "files": [
+                  "gitleaks.json",
+                  "metadata.json",
+                  "stderr.log",
+                  "stdout.log"
+                ]
+              },
+              "log_ref": {
+                "backend": "fs",
+                "stdout": "stdout.log",
+                "stderr": "stderr.log"
+              },
+              "requested_cpu": 1.0,
+              "requested_memory_mb": 1024,
+              "duration_s": 1.5283572689986613,
+              "resource_metrics": {
+                "backend": "docker",
+                "samples": [
+                  {
+                    "raw": {
+                      "cpu": "0.00%",
+                      "pids": "0",
+                      "memory": "0B / 0B",
+                      "memory_percent": "0.00%"
+                    },
+                    "name": "auditor-2faafbfff696-gitleaks-2e04f282",
+                    "pids": 0,
+                    "elapsed_s": 1.519,
+                    "cpu_percent": 0.0,
+                    "container_id": "auditor-2faafbfff696-gitleaks-2e04f282",
+                    "memory_percent": 0.0,
+                    "memory_used_bytes": 0,
+                    "memory_limit_bytes": 0
+                  }
+                ],
+                "sample_count": 1,
+                "container_name": "auditor-2faafbfff696-gitleaks-2e04f282",
+                "last_memory_mb": 0.0,
+                "missed_samples": 1,
+                "peak_memory_mb": 0.0,
+                "avg_cpu_percent": 0.0,
+                "memory_limit_mb": 0.0,
+                "last_cpu_percent": 0.0,
+                "peak_cpu_percent": 0.0,
+                "last_memory_bytes": 0,
+                "peak_memory_bytes": 0,
+                "sample_interval_s": 1.0,
+                "samples_truncated": false,
+                "memory_limit_bytes": 0
+              }
+            }
+          ]
+        },
+        "callbacks": {
+          "scan_id": "2faafbff-f696-4724-8349-e0a3c7ef7c7c",
+          "callbacks": [
+            {
+              "callback_id": "02fd26ad-af2e-4d15-833b-6ea552f5b1af",
+              "acknowledgement": {
+                "scan_id": "2faafbff-f696-4724-8349-e0a3c7ef7c7c",
+                "instance": "http://gitlab",
+                "provider": "gitlab",
+                "project_id": "1",
+                "project_found": true,
+                "report_status": "imported",
+                "repository_id": "2"
+              },
+              "integration_id": "4d658254-a3de-4b97-a9d9-6fb3fdf43e76",
+              "scan_status": "COMPLETED",
+              "status": "DELIVERED",
+              "attempts": 1,
+              "target_host": "dojo-web",
+              "status_code": 200,
+              "error": "",
+              "skip_reason": "",
+              "delivered_at": "2026-10-27T17:17:50.408960+00:00",
+              "next_attempt_at": null
+            }
+          ]
+        },
+        "next_rule_state": [
+          {
+            "id": "dd3220a3-63e4-40aa-92e6-e79914163072",
+            "sequence_id": "42b606b2-5ee9-4579-9daa-2ba99c5aaee2",
+            "name": "live-schedule-interval",
+            "events": [],
+            "enabled": true,
+            "schedule": {
+              "hour": 0,
+              "kind": "interval",
+              "minute": 0,
+              "timezone": "UTC",
+              "weekdays": [],
+              "interval_seconds": 60
+            },
+            "ref_patterns": [
+              "@default"
+            ],
+            "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+            "repository_ids": [
+              2
+            ],
+            "max_scans_per_hour": 240,
+            "next_run_at": "2026-10-27T17:18:47.784063Z",
+            "last_error": null,
+            "created_at": "2026-10-27T17:16:46.402654Z"
+          }
+        ],
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+        "finding_count": 3
+      },
+      "weekly": {
+        "scan": {
+          "id": "206c87ea-3aaf-4fd2-abf8-4699a5f68ddf",
+          "source_type": "GIT",
+          "source_url": "http://gitlab/auditor-live/nodegoat.git",
+          "branch": "main",
+          "repository_identity": {
+            "instance": "http://gitlab",
+            "provider": "gitlab",
+            "repository_id": "2"
+          },
+          "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+          "app_id": null,
+          "ws_portal_app_id": null,
+          "defectdojo_app_id": null,
+          "asoc_context": {},
+          "sequence_id": "34038a5f-963a-4658-a8c2-ff06a60176f2",
+          "gitlab_integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+          "github_integration_id": null,
+          "git_credential_id": null,
+          "application_id": null,
+          "planning_mode": "sequence",
+          "plan_source": "sequence",
+          "plan_status": "completed",
+          "target_kind": "code_repo",
+          "target_profile": null,
+          "profile_options": null,
+          "scan_plan": {
+            "audit": [
+              {
+                "at": "2026-10-27T17:18:08.275889+00:00",
+                "actor": "system",
+                "event": "plan_created"
+              },
+              {
+                "at": "2026-10-27T17:18:08.346482+00:00",
+                "actor": "worker",
+                "event": "plan_materialized"
+              }
+            ],
+            "steps": [
+              {
+                "enabled": true,
+                "step_id": "000-code-downloader",
+                "category": null,
+                "job_slug": "code-downloader",
+                "position": 0,
+                "overrides": {},
+                "resources": {
+                  "cpu": 0.5,
+                  "memory_mb": 512
+                },
+                "depends_on": [],
+                "target_ids": [],
+                "job_version": 1,
+                "generated_by": "sequence",
+                "reason_codes": [
+                  "SEQUENCE_STEP"
+                ],
+                "allow_failure": null,
+                "workspace_subdir": null,
+                "job_name_snapshot": "Code Downloader",
+                "selection_evidence": {},
+                "pipeline_output_subdir": null
+              },
+              {
+                "enabled": true,
+                "step_id": "001-gitleaks",
+                "category": null,
+                "job_slug": "gitleaks",
+                "position": 1,
+                "overrides": {},
+                "resources": {
+                  "cpu": 1,
+                  "memory_mb": 1024
+                },
+                "depends_on": [
+                  "000-code-downloader"
+                ],
+                "target_ids": [],
+                "job_version": 1,
+                "generated_by": "sequence",
+                "reason_codes": [
+                  "SEQUENCE_STEP"
+                ],
+                "allow_failure": null,
+                "workspace_subdir": null,
+                "job_name_snapshot": "Gitleaks",
+                "selection_evidence": {},
+                "pipeline_output_subdir": null
+              }
+            ],
+            "source": "sequence",
+            "status": "completed",
+            "plan_id": "03f83d40-29e1-4d93-8dfa-e95c12f8ac6d",
+            "targets": [],
+            "version": 1,
+            "warnings": [],
+            "created_at": "2026-10-27T17:18:08.275882+00:00",
+            "ambiguities": [],
+            "target_kind": "code_repo",
+            "filtered_signals": [],
+            "created_from_profile_id": null
+          },
+          "scan_plan_revision": 1,
+          "auto_launch": true,
+          "profile_error": null,
+          "plan_error": null,
+          "status": "COMPLETED",
+          "priority_score": -70.0,
+          "sg_blocking": false,
+          "criticality": 5,
+          "artifact_retention_hours": 168,
+          "security_gate_min_severity": "high",
+          "created_at": "2026-10-27T17:18:08.099635Z",
+          "started_at": "2026-10-27T17:18:08.347054Z",
+          "completed_at": "2026-10-27T17:18:09.701181Z",
+          "artifact_expires_at": "2026-11-03T17:18:09.701181Z",
+          "artifacts_status": "AVAILABLE",
+          "artifacts_cleaned_at": null,
+          "error_message": null,
+          "verdict": {
+            "counts": {
+              "low": 0,
+              "high": 3,
+              "info": 0,
+              "medium": 0,
+              "unknown": 0,
+              "critical": 0
+            },
+            "status": "failed",
+            "blocked": false,
+            "enforced": false,
+            "scan_scope": "full",
+            "evaluated_at": "2026-10-27T17:18:09.704215+00:00",
+            "finding_count": 3,
+            "schema_version": 2,
+            "findings_sample": [
+              {
+                "id": "private-key",
+                "cwe": [],
+                "line": 1,
+                "path": "artifacts/cert/server.key",
+                "title": "Identified a Private Key, which may compromise cryptographic security and sensitive data encryption.",
+                "artifact": "gitleaks.json",
+                "end_line": 15,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 30,
+                "fingerprint": "/workspace/artifacts/cert/server.key:private-key:1",
+                "start_column": 1,
+                "finding_class": "secrets"
+              },
+              {
+                "id": "generic-api-key",
+                "cwe": [],
+                "line": 6,
+                "path": "config/env/development.js",
+                "title": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+                "artifact": "gitleaks.json",
+                "end_line": 6,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 43,
+                "fingerprint": "/workspace/config/env/development.js:generic-api-key:6",
+                "start_column": 5,
+                "finding_class": "secrets"
+              },
+              {
+                "id": "generic-api-key",
+                "cwe": [],
+                "line": 6,
+                "path": "config/env/test.js",
+                "title": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+                "artifact": "gitleaks.json",
+                "end_line": 6,
+                "job_slug": "gitleaks",
+                "severity": "high",
+                "end_column": 43,
+                "fingerprint": "/workspace/config/env/test.js:generic-api-key:6",
+                "start_column": 5,
+                "finding_class": "secrets"
+              }
+            ],
+            "failed_job_count": 0,
+            "highest_severity": "high",
+            "minimum_severity": "high",
+            "artifact_parse_errors": [],
+            "threshold_finding_count": 3,
+            "artifact_parse_error_count": 0
+          },
+          "asoc_integration_ids": [],
+          "asoc_delivery": [
+            {
+              "error": "ASOC delivery disabled for this job/provider",
+              "status": "SKIPPED",
+              "step_id": "8adebb88-2802-49bc-93a8-00b0482aacf1",
+              "job_name": "Gitleaks",
+              "job_slug": "gitleaks",
+              "provider": "custom_http",
+              "created_at": "2026-10-27T17:18:09.726617+00:00",
+              "target_url": null,
+              "report_file": null,
+              "result_urls": {},
+              "status_code": null,
+              "external_refs": {},
+              "external_urls": {},
+              "import_result": {},
+              "integration_id": "4d658254-a3de-4b97-a9d9-6fb3fdf43e76",
+              "integration_name": "Dojo transactional bridge live",
+              "response_excerpt": null,
+              "response_mapping": {}
+            }
+          ],
+          "ci_delivery": {
+            "error": "GitLab status API returned HTTP 403",
+            "state": "success",
+            "status": "failed",
+            "provider": "gitlab",
+            "updated_at": "2026-10-27T17:18:09.723710+00:00",
+            "status_code": 403
+          },
+          "webhook_context": {
+            "event": "schedule",
+            "provider": "gitlab",
+            "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+            "project_id": "2",
+            "repository": "auditor-live/nodegoat",
+            "trigger_type": "schedule",
+            "automation_id": "46867f57-b6ce-48e2-aa1d-8a33cfd31b97"
+          },
+          "job_runs": [
+            {
+              "id": "bcd1e721-d737-4af8-af30-51bc6982a927",
+              "position": 0,
+              "job_slug": "code-downloader",
+              "job_name_snapshot": "Code Downloader",
+              "job_version": 1,
+              "status": "COMPLETED",
+              "started_at": "2026-10-27T17:18:08.356274Z",
+              "completed_at": "2026-10-27T17:18:09.036953Z",
+              "exit_code": 0,
+              "artifact_ref": {
+                "backend": "fs",
+                "relative_path": "scans/206c87ea-3aaf-4fd2-abf8-4699a5f68ddf/code-downloader",
+                "files": [
+                  "metadata.json",
+                  "stderr.log",
+                  "stdout.log"
+                ]
+              },
+              "log_ref": {
+                "backend": "fs",
+                "stdout": "stdout.log",
+                "stderr": "stderr.log"
+              },
+              "requested_cpu": 0.5,
+              "requested_memory_mb": 512,
+              "duration_s": 0.6784403750007186,
+              "resource_metrics": {
+                "backend": "local",
+                "samples": [],
+                "sample_count": 0
+              }
+            },
+            {
+              "id": "8adebb88-2802-49bc-93a8-00b0482aacf1",
+              "position": 1,
+              "job_slug": "gitleaks",
+              "job_name_snapshot": "Gitleaks",
+              "job_version": 1,
+              "status": "COMPLETED",
+              "started_at": "2026-10-27T17:18:09.042663Z",
+              "completed_at": "2026-10-27T17:18:09.700368Z",
+              "exit_code": 0,
+              "artifact_ref": {
+                "backend": "fs",
+                "relative_path": "scans/206c87ea-3aaf-4fd2-abf8-4699a5f68ddf/gitleaks",
+                "files": [
+                  "gitleaks.json",
+                  "metadata.json",
+                  "stderr.log",
+                  "stdout.log"
+                ]
+              },
+              "log_ref": {
+                "backend": "fs",
+                "stdout": "stdout.log",
+                "stderr": "stderr.log"
+              },
+              "requested_cpu": 1.0,
+              "requested_memory_mb": 1024,
+              "duration_s": 0.6538097409993497,
+              "resource_metrics": {
+                "backend": "docker",
+                "samples": [],
+                "sample_count": 0,
+                "container_name": "auditor-206c87ea3aaf-gitleaks-938fbc96",
+                "last_memory_mb": null,
+                "missed_samples": 1,
+                "peak_memory_mb": null,
+                "avg_cpu_percent": null,
+                "memory_limit_mb": null,
+                "last_cpu_percent": null,
+                "peak_cpu_percent": null,
+                "last_memory_bytes": null,
+                "peak_memory_bytes": null,
+                "sample_interval_s": 1.0,
+                "samples_truncated": false,
+                "memory_limit_bytes": null
+              }
+            }
+          ]
+        },
+        "callbacks": {
+          "scan_id": "206c87ea-3aaf-4fd2-abf8-4699a5f68ddf",
+          "callbacks": [
+            {
+              "callback_id": "c553a7f5-7c28-42d4-be4e-40e9c0eeee2a",
+              "acknowledgement": {
+                "scan_id": "206c87ea-3aaf-4fd2-abf8-4699a5f68ddf",
+                "instance": "http://gitlab",
+                "provider": "gitlab",
+                "project_id": "1",
+                "project_found": true,
+                "report_status": "imported",
+                "repository_id": "2"
+              },
+              "integration_id": "4d658254-a3de-4b97-a9d9-6fb3fdf43e76",
+              "scan_status": "COMPLETED",
+              "status": "DELIVERED",
+              "attempts": 1,
+              "target_host": "dojo-web",
+              "status_code": 200,
+              "error": "",
+              "skip_reason": "",
+              "delivered_at": "2026-10-27T17:18:09.730157+00:00",
+              "next_attempt_at": null
+            }
+          ]
+        },
+        "next_rule_state": [
+          {
+            "id": "46867f57-b6ce-48e2-aa1d-8a33cfd31b97",
+            "sequence_id": "34038a5f-963a-4658-a8c2-ff06a60176f2",
+            "name": "live-schedule-weekly",
+            "events": [],
+            "enabled": true,
+            "schedule": {
+              "hour": 17,
+              "kind": "weekly",
+              "minute": 18,
+              "timezone": "UTC",
+              "weekdays": [
+                1
+              ],
+              "interval_seconds": null
+            },
+            "ref_patterns": [
+              "@default"
+            ],
+            "integration_id": "e38c9f45-4b3d-49e4-b3d3-ca31496dc09a",
+            "repository_ids": [
+              2
+            ],
+            "max_scans_per_hour": 240,
+            "next_run_at": "2026-11-03T17:18:00Z",
+            "last_error": null,
+            "created_at": "2026-10-27T17:16:46.456673Z"
+          }
+        ],
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+        "finding_count": 3
+      }
+    }
+  },
+  "scenarios_passed": [
+    "real_juice_shop_nodegoat_three_scanner_baseline",
+    "nine_real_gitlab_triggers",
+    "actual_interval_scheduler",
+    "actual_weekly_scheduler",
+    "profile_create_update_disable_delete_readback",
+    "normalization_and_rule_reorder",
+    "invalid_create_edit_recovery",
+    "periodic_rule_drift_repair",
+    "missing_remote_sequence_error",
+    "callback_only_native_product_create",
+    "concurrent_duplicate_callback_receipts",
+    "same_scan_different_callback_id",
+    "callback_identity_sha_conflict",
+    "callback_auth_payload_origin_ssrf_refusals",
+    "webhook_auth_json_refusals",
+    "exact_real_webhook_payload_replay_dedup",
+    "rename_and_group_transfer_stable_product_engagement",
+    "disabled_archived_missing_ref_filter_exclusions",
+    "read_only_scope_hidden_project_absent",
+    "empty_report_native_empty_test",
+    "failed_scan_failed_ack_without_import",
+    "completed_with_failed_scanner_refused_without_import",
+    "lost_create_response_edit_retry_one_sequence",
+    "lost_callback_response_retry_one_test",
+    "dojo_unavailable_outbox_recovery",
+    "auditor_unavailable_periodic_profile_recovery",
+    "session_ui_save_sync_disable_and_csrf",
+    "delete_never_attempted_without_remote_create",
+    "delete_rejected_without_remote_create",
+    "rejected_disable_explicit_refusal",
+    "mandatory_snapshot_no_bypass",
+    "native_api_receipt_database_count_equality"
+  ],
+  "native_counts": {
+    "imports": [
+      {
+        "scan_id": "22a2f31d-2fce-4bd2-bb47-9558f49ae9d8",
+        "test_id": 28,
+        "findings": 3,
+        "commit_sha": "017260aa22cc1d5de4ce6762bea4645497617f5f",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "0482ae73-931a-46f0-b7ba-8d5cfef4311a",
+        "test_id": 27,
+        "findings": 3,
+        "commit_sha": "1479a80116be3140ae44f7514bb0b65fd58f11fa",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "bb27c611-46d0-48e8-81fb-54562e40d8d5",
+        "test_id": 26,
+        "findings": 0,
+        "commit_sha": "8895f42bfd974051c7815133935882490eefcc35",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "2a1f6089-2c66-4053-94be-a0f055ec57c7",
+        "test_id": 25,
+        "findings": 0,
+        "commit_sha": "8895f42bfd974051c7815133935882490eefcc35",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "b7f51b37-869c-4b20-8d1c-d8ead678c865",
+        "test_id": 24,
+        "findings": 0,
+        "commit_sha": "8895f42bfd974051c7815133935882490eefcc35",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "5"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "f6e9f866-f08d-49c3-804d-3b55ffe1dff1",
+        "test_id": 23,
+        "findings": 3,
+        "commit_sha": "1274a42016a79cb0d324f9a585df377aaf6f011a",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "7f1fe720-30ed-4d8b-815a-b2b8ba62bfc8",
+        "test_id": 22,
+        "findings": 3,
+        "commit_sha": "4bc0c4df8296dc4744c8eb7e3e537343ddc372d6",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "6dcc4e6c-b350-439f-a70c-714864ae5fb4",
+        "test_id": 21,
+        "findings": 3,
+        "commit_sha": "452edc0f139a545a88ee4d7ffa46be95866976c8",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "117b5049-f3db-4531-bee2-3a936f4123ed",
+        "test_id": 20,
+        "findings": 3,
+        "commit_sha": "7cc08f973854e9cffcdff3e7e43a1a371fd892d4",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "fa3bd6b1-fff3-48f7-9637-275dce737179",
+        "test_id": 19,
+        "findings": 3,
+        "commit_sha": "7cc08f973854e9cffcdff3e7e43a1a371fd892d4",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "7695432d-1d2a-4e7a-8774-fa46ad643830",
+        "test_id": 18,
+        "findings": 3,
+        "commit_sha": "7cc08f973854e9cffcdff3e7e43a1a371fd892d4",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "5124c32e-ec3b-4aa6-b752-1ffc963d2d8b",
+        "test_id": 17,
+        "findings": 3,
+        "commit_sha": "1722be8d316ed5f7bc1886704c2ddcff944180ad",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "fb426d3e-52d9-4bf1-b242-578ea850952d",
+        "test_id": 16,
+        "findings": 3,
+        "commit_sha": "442733a742fe0e11138f7bde60cbbfc1953e05d2",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "ed72d6f7-dfb7-4867-bdcb-11e7c1b15974",
+        "test_id": 15,
+        "findings": 3,
+        "commit_sha": "15bf77077c183a01ad1e3b345a632725af337077",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "53b4eb85-bc9e-4fc2-8065-45376a7a0e6e",
+        "test_id": 14,
+        "findings": 1,
+        "commit_sha": "175eee3425e249d2ec6f072eef9e85a34561600f",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "4"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "206c87ea-3aaf-4fd2-abf8-4699a5f68ddf",
+        "test_id": 13,
+        "findings": 3,
+        "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "2faafbff-f696-4724-8349-e0a3c7ef7c7c",
+        "test_id": 12,
+        "findings": 3,
+        "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "8b037500-096f-4cc2-a885-0c0d2efebe37",
+        "test_id": 11,
+        "findings": 3,
+        "commit_sha": "efb637ab73460da8de1c522e11045c81f880bc39",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "dda7acf9-d703-4503-b0cf-fed63359f7f3",
+        "test_id": 10,
+        "findings": 3,
+        "commit_sha": "769e4391d8b081f1f9c0f28bceadc2ed8123fa98",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "dca8f263-b168-484b-b951-d144e80db083",
+        "test_id": 9,
+        "findings": 3,
+        "commit_sha": "eddccfc6f8b43ee4dc240eec240f6e05132ce440",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "321b39f8-7427-4d39-8e85-4425368f7c2c",
+        "test_id": 8,
+        "findings": 3,
+        "commit_sha": "eddccfc6f8b43ee4dc240eec240f6e05132ce440",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "1ac5de8e-add2-48a4-9c5a-cc5a6ebc63bc",
+        "test_id": 7,
+        "findings": 3,
+        "commit_sha": "eddccfc6f8b43ee4dc240eec240f6e05132ce440",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "be2096f0-527e-42fb-ae65-e054105f6372",
+        "test_id": 6,
+        "findings": 3,
+        "commit_sha": "cc8f222c03c5f5b8760c14c20f7c6dbd6fdba122",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "f46c8557-89f6-46bb-abfb-3262cefaa61e",
+        "test_id": 5,
+        "findings": 3,
+        "commit_sha": "afe0b82d7dd1601edb784b912f64f1176b5c1260",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "a8f24af3-696d-44eb-8d58-0bbccf01da62",
+        "test_id": 4,
+        "findings": 3,
+        "commit_sha": "1fd4d0875be654398459cf4de2ebfa58158392ef",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "4b32e111-235b-4ef1-b29e-48670f948b31",
+        "test_id": 3,
+        "findings": 3,
+        "commit_sha": "8498a56647a7b3e784f70f71d92cb09890a5163e",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "9097fd93-0e1c-4709-ad4b-9ca083ff0741",
+        "test_id": 2,
+        "findings": 432,
+        "commit_sha": "a8b2084c9554451b5f8ed549022d6eb43383bc0c",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "1"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "detect-secrets",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "opengrep",
+            "status": "COMPLETED"
+          }
+        ]
+      },
+      {
+        "scan_id": "b016d6d7-1ea5-4bae-96a6-58ad1e577790",
+        "test_id": 1,
+        "findings": 78,
+        "commit_sha": "940bf73289d6f5f24739b27653bdd2e562871e4e",
+        "repository_identity": {
+          "instance": "http://gitlab",
+          "provider": "gitlab",
+          "repository_id": "2"
+        },
+        "job_statuses": [
+          {
+            "slug": "code-downloader",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "gitleaks",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "detect-secrets",
+            "status": "COMPLETED"
+          },
+          {
+            "slug": "opengrep",
+            "status": "COMPLETED"
+          }
+        ]
+      }
+    ],
+    "test_count": 28,
+    "finding_count": 577,
+    "hidden_project_absent": true,
+    "api_counts_match": true,
+    "database_counts_match": true,
+    "database_finding_count": 577
+  },
+  "preservation": {
+    "preexisting_container_count": 12,
+    "existing_docker_resource_problems": [],
+    "source_entries_verified": 2333,
+    "source_problems": []
+  },
+  "evidence_directory": "/home/saros/Projects/AppSec-Auditor/auditor-live-integration/evidence",
+  "regression_directory": "/home/saros/Projects/AppSec-Auditor/auditor-live-integration/auditor-7b2e8d/test-results",
+  "limitations": [
+    "Stand data/config/databases/media/registry use bounded tmpfs and are disposable; stopping the last mount or reboot may erase them.",
+    "Full three-scanner baseline originally ran on Auditor 25ef540 with the temporary snapshot compatibility option; all baseline report identity/SHA fields and native counts were read back again on 7b2e8d. All nine final trigger proofs and schedules used strict 7b2e8d reports. The final bridge has no snapshot bypass.",
+    "Opengrep reported 14 partially scanned files in NodeGoat. Findings were nonzero; this is not a claim of complete source coverage.",
+    "GitLab webhook burst hit the initial public rate limit 30; the isolated stand was explicitly configured to 600 and actual tag creation was rerun successfully.",
+    "Playwright was not rerun locally due to about 2.2 GiB free disk; parent reported 4/4 Docker and full GitHub Ubuntu CI PASS on c60e84c.",
+    "Portable scaffold Compose/render/Python compilation and selected packaged scenarios were checked. A second complete fresh stand was not launched after packaging."
+  ],
+  "publication_secret_check": {
+    "files_checked": 55,
+    "secret_values_checked": 19,
+    "matching_files": [],
+    "match_count": 0
+  }
+}

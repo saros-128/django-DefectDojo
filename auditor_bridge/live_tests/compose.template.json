@@ -1,0 +1,466 @@
+{
+  "services": {
+    "gitlab": {
+      "image": "gitlab/gitlab-ce:19.5.0-ce.0",
+      "hostname": "gitlab",
+      "shm_size": "256m",
+      "mem_limit": "10g",
+      "cpus": 6,
+      "ports": [
+        "127.0.0.1:${GITLAB_PORT}:80"
+      ],
+      "volumes": [
+        "gitlab-data:/var/opt/gitlab",
+        "gitlab-config:/etc/gitlab",
+        "./secrets:/run/live-secrets:ro"
+      ],
+      "tmpfs": [
+        "/var/log/gitlab:size=128m"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "environment": {
+        "GITLAB_OMNIBUS_CONFIG": "external_url 'http://gitlab'\ngitlab_rails['initial_root_password'] = File.read('/run/live-secrets/gitlab-root').strip\npuma['worker_processes'] = 0\npuma['min_threads'] = 1\npuma['max_threads'] = 4\nsidekiq['concurrency'] = 3\nprometheus_monitoring['enable'] = false\ngitlab_kas['enable'] = false\nregistry['enable'] = false\nletsencrypt['enable'] = false\nnginx['listen_port'] = 80\nnginx['listen_https'] = false\npostgresql['shared_buffers'] = '128MB'\npostgresql['max_connections'] = 60\ngitlab_rails['gitlab_default_projects_features_container_registry'] = false\npostgresql['max_locks_per_transaction'] = 256\n"
+      },
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "-sf",
+          "http://127.0.0.1/-/readiness?all=1"
+        ],
+        "interval": "15s",
+        "timeout": "10s",
+        "retries": 60,
+        "start_period": "300s"
+      }
+    },
+    "dojo-db": {
+      "image": "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "env_file": [
+        "./secrets/dojo-db.env"
+      ],
+      "volumes": [
+        "dojo-db:/var/lib/postgresql/data"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "dojo"
+        ],
+        "interval": "2s",
+        "timeout": "3s",
+        "retries": 30
+      },
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "dojo-redis": {
+      "image": "redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "dojo-init": {
+      "image": "${BRIDGE_IMAGE}",
+      "env_file": [
+        "./secrets/dojo.env"
+      ],
+      "volumes": [
+        "./secrets/dojo-service:/run/live-secrets:ro",
+        "dojo-media:/app/media",
+        "${DOJO_SOURCE}/auditor_bridge:/app/auditor_bridge:ro"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/entrypoint-initializer.sh"
+      ],
+      "depends_on": {
+        "dojo-db": {
+          "condition": "service_healthy"
+        }
+      },
+      "environment": {
+        "AUDITOR_BRIDGE_ENABLED": "true",
+        "DJANGO_SETTINGS_MODULE": "auditor_bridge.deploy.settings"
+      }
+    },
+    "dojo": {
+      "image": "${BRIDGE_IMAGE}",
+      "env_file": [
+        "./secrets/dojo.env"
+      ],
+      "volumes": [
+        "./secrets/dojo-service:/run/live-secrets:ro",
+        "dojo-media:/app/media",
+        "${DOJO_SOURCE}/auditor_bridge:/app/auditor_bridge:ro"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/entrypoint-uwsgi.sh"
+      ],
+      "depends_on": {
+        "dojo-init": {
+          "condition": "service_completed_successfully"
+        },
+        "dojo-redis": {
+          "condition": "service_started"
+        }
+      },
+      "environment": {
+        "AUDITOR_BRIDGE_ENABLED": "true",
+        "DJANGO_SETTINGS_MODULE": "auditor_bridge.deploy.settings"
+      }
+    },
+    "dojo-worker": {
+      "image": "${BRIDGE_IMAGE}",
+      "env_file": [
+        "./secrets/dojo.env"
+      ],
+      "volumes": [
+        "./secrets/dojo-service:/run/live-secrets:ro",
+        "dojo-media:/app/media",
+        "${DOJO_SOURCE}/auditor_bridge:/app/auditor_bridge:ro"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "/entrypoint-celery-worker.sh"
+      ],
+      "depends_on": {
+        "dojo-init": {
+          "condition": "service_completed_successfully"
+        },
+        "dojo-redis": {
+          "condition": "service_started"
+        }
+      },
+      "environment": {
+        "AUDITOR_BRIDGE_ENABLED": "true",
+        "DJANGO_SETTINGS_MODULE": "auditor_bridge.deploy.settings"
+      }
+    },
+    "dojo-web": {
+      "image": "defectdojo/defectdojo-nginx:3.4.300",
+      "environment": {
+        "DD_UWSGI_HOST": "dojo",
+        "DD_UWSGI_PORT": "3031"
+      },
+      "ports": [
+        "127.0.0.1:${DOJO_PORT}:8080"
+      ],
+      "volumes": [
+        "dojo-media:/usr/share/nginx/html/media"
+      ],
+      "depends_on": [
+        "dojo"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "scanner-registry": {
+      "image": "registry:2.8.3@sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373",
+      "ports": [
+        "127.0.0.1:${REGISTRY_PORT}:5000"
+      ],
+      "volumes": [
+        "registry-data:/var/lib/registry"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "auditor-db": {
+      "image": "postgres:16-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777",
+      "env_file": [
+        "./secrets/auditor-db.env"
+      ],
+      "volumes": [
+        "auditor-db:/var/lib/postgresql/data"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "pg_isready",
+          "-U",
+          "auditor"
+        ],
+        "interval": "2s",
+        "timeout": "3s",
+        "retries": 30
+      },
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "auditor-redis": {
+      "image": "redis:7-alpine@sha256:e7723ff73d963f5cc6d9c4643ea3d989527a402a319239054e9472a7fb9219a2",
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "openbao": {
+      "image": "openbao/openbao:2.5.4@sha256:436eaf9778cad75507ff70ea26ace30dcbe15606e619ac3823495663d7f7c115",
+      "env_file": [
+        "./secrets/bao.env"
+      ],
+      "command": [
+        "server",
+        "-dev",
+        "-dev-listen-address=0.0.0.0:8200"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    },
+    "auditor-api": {
+      "image": "${APP_IMAGE}",
+      "env_file": [
+        "./secrets/auditor.env"
+      ],
+      "volumes": [
+        "./runtime:/data",
+        "./secrets:/run/live-secrets:ro",
+        "/var/run/docker.sock:/var/run/docker.sock"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "depends_on": {
+        "auditor-db": {
+          "condition": "service_healthy"
+        },
+        "auditor-redis": {
+          "condition": "service_started"
+        },
+        "openbao": {
+          "condition": "service_started"
+        }
+      },
+      "ports": [
+        "127.0.0.1:${AUDITOR_PORT}:8000"
+      ]
+    },
+    "auditor-worker": {
+      "image": "${APP_IMAGE}",
+      "env_file": [
+        "./secrets/auditor.env"
+      ],
+      "volumes": [
+        "./runtime:/data",
+        "./secrets:/run/live-secrets:ro",
+        "/var/run/docker.sock:/var/run/docker.sock"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "depends_on": {
+        "auditor-db": {
+          "condition": "service_healthy"
+        },
+        "auditor-redis": {
+          "condition": "service_started"
+        },
+        "openbao": {
+          "condition": "service_started"
+        }
+      },
+      "command": [
+        "python",
+        "-m",
+        "auditor.worker"
+      ]
+    },
+    "auditor-poller": {
+      "image": "${APP_IMAGE}",
+      "env_file": [
+        "./secrets/auditor.env"
+      ],
+      "volumes": [
+        "./runtime:/data",
+        "./secrets:/run/live-secrets:ro",
+        "/var/run/docker.sock:/var/run/docker.sock"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "depends_on": {
+        "auditor-db": {
+          "condition": "service_healthy"
+        },
+        "auditor-redis": {
+          "condition": "service_started"
+        },
+        "openbao": {
+          "condition": "service_started"
+        }
+      },
+      "command": [
+        "python",
+        "-m",
+        "auditor.gitlab_poller"
+      ]
+    },
+    "bridge-worker": {
+      "image": "${BRIDGE_IMAGE}",
+      "env_file": [
+        "./secrets/dojo.env"
+      ],
+      "volumes": [
+        "./secrets/dojo-service:/run/live-secrets:ro",
+        "dojo-media:/app/media",
+        "${DOJO_SOURCE}/auditor_bridge:/app/auditor_bridge:ro"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      },
+      "entrypoint": [
+        "python",
+        "manage.py",
+        "auditor_bridge_worker",
+        "--interval",
+        "15"
+      ],
+      "depends_on": {
+        "dojo-init": {
+          "condition": "service_completed_successfully"
+        },
+        "dojo-redis": {
+          "condition": "service_started"
+        }
+      },
+      "environment": {
+        "AUDITOR_BRIDGE_ENABLED": "true",
+        "DJANGO_SETTINGS_MODULE": "auditor_bridge.deploy.settings"
+      }
+    },
+    "gitlab-runner": {
+      "image": "gitlab/gitlab-runner:alpine-v19.5.0",
+      "volumes": [
+        "./secrets/runner-config:/etc/gitlab-runner",
+        "/var/run/docker.sock:/var/run/docker.sock"
+      ],
+      "logging": {
+        "driver": "json-file",
+        "options": {
+          "max-size": "5m",
+          "max-file": "2"
+        }
+      }
+    }
+  },
+  "volumes": {
+    "gitlab-data": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=3g"
+      }
+    },
+    "gitlab-config": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=64m"
+      }
+    },
+    "dojo-db": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=1g"
+      }
+    },
+    "dojo-media": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=128m"
+      }
+    },
+    "registry-data": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=600m"
+      }
+    },
+    "auditor-db": {
+      "driver_opts": {
+        "type": "tmpfs",
+        "device": "tmpfs",
+        "o": "size=512m"
+      }
+    }
+  }
+}
