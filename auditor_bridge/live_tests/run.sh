@@ -7,7 +7,13 @@ source config.sh
 dock() { if [[ "${LIVE_DOCKER_SUDO:-1}" == 1 ]]; then sudo -n docker "$@"; else command docker "$@"; fi; }
 compose() { dock compose -f compose.json "$@"; }
 scenario() {
+  local snapshot_mount=()
+  if [[ -n "${LIVE_SNAPSHOT_ROOT:-}" ]]; then
+    [[ "$LIVE_SNAPSHOT_ROOT" == /* && -d "$LIVE_SNAPSHOT_ROOT" ]]
+    snapshot_mount=(-v "$LIVE_SNAPSHOT_ROOT:/snapshots:ro")
+  fi
   dock run --rm --user "$(id -u):$(id -g)" --network "${COMPOSE_PROJECT_NAME}_default" \
+    "${snapshot_mount[@]}" \
     -e "COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME" -v "$PWD/harness:/harness:ro" -v "$PWD/secrets:/run/live-secrets" \
     -v "$PWD/evidence:/evidence" -v "$PWD/runtime/fixtures:/fixtures" -w /harness "$APP_IMAGE" python "$1"
   printf 'PASS: %s\n' "$1"

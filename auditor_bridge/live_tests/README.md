@@ -68,8 +68,10 @@ return 404 to the service account and remain absent from both inventories.
 
 If outbound GitHub access is unavailable inside Docker, prepare public source
 snapshots with Git in `runtime/upstream/juice-shop` and `runtime/upstream/nodegoat`
-at the exact pinned commits, preserving `.git`. Mount that directory at
-`/snapshots:ro` when invoking `prepare_repositories.py`. This is a source-download
+at the exact pinned commits, preserving `.git`. Export `LIVE_SNAPSHOT_ROOT`
+with that directory's absolute path; `run.sh` mounts it at `/snapshots:ro`.
+Each checkout must have only the upstream URL as its `origin` remote.
+This is a source-download
 fallback; it does not run either application or install host dependencies.
 
 Use a fresh stand directory for a fresh acceptance run. Individual scenario
